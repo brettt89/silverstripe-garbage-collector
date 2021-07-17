@@ -3,7 +3,7 @@
 namespace Silverstripe\GarbageCollection;
 
 interface ProcessorInterface
-{
+{   
     public function getName(): string;
 
     public static function getImplementorClass(): string;

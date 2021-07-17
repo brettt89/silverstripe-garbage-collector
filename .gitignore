@@ -1,2 +1,4 @@
 /vendor/
+/assets/
 composer.lock
+.env

@@ -5,7 +5,9 @@ namespace Silverstripe\GarbageCollection\Tests\Processors;
 use SilverStripe\Dev\SapphireTest;
 use Silverstripe\GarbageCollection\Tests\Ship;
 use SilverStripe\ORM\FieldType\DBDatetime;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Queries\SQLDelete;
+use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\ORM\DB;
 use Silverstripe\GarbageCollection\Processors\SQLExpressionProcessor;
 
@@ -14,7 +16,7 @@ class SQLExpressionProcessorTest extends SapphireTest
     /**
      * @var string
      */
-    protected static $fixture_file = 'SQLTest.yml';
+    protected static $fixture_file = 'tests/php/SQLTest.yml';
 
     /**
      * @var string[]
@@ -23,62 +25,60 @@ class SQLExpressionProcessorTest extends SapphireTest
         Ship::class,
     ];
 
-    protected function setUp(): void
-    {
-        DBDatetime::set_mock_now('2020-01-01 00:00:00');
-        parent::setUp();
-    }
-
-    /**
-     * @param DataObject|Versioned $model
-     * @throws ValidationException
-     * @throws Exception
-     */
-    private function createTestVersions(DataObject $model, int $mockRange = 10): void
-    {
-        foreach ($mockRange as $i) {
-            $mockDate = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822())
-                ->modify(sprintf('+ %d days', $i))
-                ->Rfc2822();
-
-            DBDatetime::withFixedNow($mockDate, static function () use ($model, $i): void {
-                $model->Title = 'Iteration ' . $i;
-                $model->write();
-
-                if (($i % 3) !== 0) {
-                    return;
-                }
-
-                $model->publishRecursive();
-            });
-        }
-    }
-
     public function testGetName()
     {
         $class = Ship::class;
 
         // Create versioned records for testing deletion
         $model = $this->objFromFixture($class, 'ship1');
-        $this->createTestVersions($model, 4);
-
-        $baseTable = $model->baseTable();
-        $versions = [1, 2, 3];
 
         $expression = SQLDelete::create(
             [
-                $baseTable,
-            ],
-            [
-                // We are deleting specific versions for specific record
-                $baseTable . '."RecordID"' => $recordId,
-                sprintf($baseTable . '."Version" IN (%s)', DB::placeholders($versions)) => $versions,
-            ],
-            $baseTables,
+                $model->baseTable(),
+            ]
         );
 
         $processor = new SQLExpressionProcessor($expression);
         $name = $processor->getName();
         $this->assertEquals($name, 'GarbageCollection_Ship');
+
+        $processor = new SQLExpressionProcessor($expression, 'TestName');
+        $name = $processor->getName();
+        $this->assertEquals($name, 'TestName');
+    }
+
+    public function testProcess()
+    {
+        $class = Ship::class;
+
+        // Create versioned records for testing deletion
+        $model = $this->objFromFixture($class, 'ship1');
+        $baseTable = sprintf('"%s"', $model->baseTable());
+        $values = [
+            'TestShip2',
+            'TestShip3'
+        ];
+
+        // SQLSelect should be converted to SQLDelete
+        $expression = SQLSelect::create(
+            [
+                "Title"
+            ],
+            [
+                $baseTable,
+            ],
+            [
+                sprintf($baseTable . '."Title" IN (%s)', DB::placeholders($values)) => $values
+            ]
+        );
+
+        $processor = new SQLExpressionProcessor($expression);
+        $count = $processor->process();
+        // SQLSelect should be converted to SQLDelete
+        // 2 records should have been removed 
+        $this->assertEquals($count, 2);
+
+        // 1 record should remain
+        $this->assertEquals(Ship::get()->count(), 1);
     }
 }

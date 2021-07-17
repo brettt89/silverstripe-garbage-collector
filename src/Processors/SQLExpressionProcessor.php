@@ -5,6 +5,7 @@ namespace Silverstripe\GarbageCollection\Processors;
 use Silverstripe\GarbageCollection\ProcessorInterface;
 use SilverStripe\ORM\Queries\SQLExpression;
 use SilverStripe\ORM\Queries\SQLDelete;
+use SilverStripe\ORM\DB;
 
 class SQLExpressionProcessor implements ProcessorInterface
 {   
@@ -36,8 +37,7 @@ class SQLExpressionProcessor implements ProcessorInterface
     public function process(): int
     {           
         // Create SQLDelete statement from SQL provided and execute
-        $delete = new SQLDelete();
-        $delete = $this->expression->copyTo($delete);
+        $delete = $this->expression->toDelete();
         $delete->execute();
 
         return DB::affected_rows();

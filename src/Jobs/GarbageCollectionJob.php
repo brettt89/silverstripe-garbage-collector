@@ -5,6 +5,8 @@ namespace Silverstripe\GarbageCollection\Jobs;
 use Exception;
 use SilverStripe\ORM\Queries\SQLConditionalExpression;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\DataObject;    
+use Silverstripe\GarbageCollection\CollectorInterface;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJobService;
@@ -20,14 +22,17 @@ class GarbageCollectionJob extends AbstractQueuedJob
      * 
      * @var string
      */
-    public function __construct(CollectorInterface $collector)
+    public function __construct(CollectorInterface $collector, $batchSize = 10)
     {
         $this->collector = $collector;
-        $this->processors = [];
+        $this->batchSize = $batchSize;
+        $processors = [];
 
         foreach ($collector->getProcessors() as $processor) {
-            $this->processors[$processor::getImplementor()] = $processor;
+            $processors[$processor::getImplementorClass()] = $processor;
         }
+        
+        $this->processors = $processors;
     }
 
     /**
@@ -58,20 +63,25 @@ class GarbageCollectionJob extends AbstractQueuedJob
     {
         $remaining = $this->remaining;
 
-        // check for trivial case
-        if (count($remaining) === 0) {
-            $this->isComplete = true;
-            return;
+        for ($i = 0; $i < $this->batchSize; $i++) {
+
+            // check for trivial case
+            if (count($remaining) === 0) {
+                $this->isComplete = true;
+                return;
+            }
+
+            if (count($this->processors) === 0) {
+                throw new Exception(sprintf('No Processors found for collector %s', $this->collector->getName()));
+            }
+
+            $collection = array_shift($remaining);
+            $this->processCollection($collection);
+
+            // update job progress
+            $this->remaining = $remaining;
         }
 
-        if (count($this->processors) === 0) {
-            throw new Exception(sprintf('No Processors found for collector %s', $this->collector->getName()));
-        }
-        
-        $this->processCollection($remaining);
-
-        // update job progress
-        $this->remaining = $remaining;
         $this->currentStep += 1;
 
         // check for job completion
@@ -85,7 +95,7 @@ class GarbageCollectionJob extends AbstractQueuedJob
     protected function processCollection(array $collection)
     {
         foreach ($collection as $item) {
-            if ($item instanceof \Traversable) {
+            if (is_array($item) || $item instanceof \Traversable && !$item instanceof DataObject) {
                 // If traversable object is provided, loop through items to process;
                 $this->processCollection($item);
             } else {
@@ -99,7 +109,7 @@ class GarbageCollectionJob extends AbstractQueuedJob
                         } catch (Exception $e) {
                             // Log failures and continue;
                             // TODO: Stop re-processing of failed deletion records and expose it for audit.
-                            $this->addMessage(springf('Unable to process records: "%s"', $e->getMessage()));
+                            $this->addMessage(sprintf('Unable to process records: "%s"', $e->getMessage()));
                         }
                         
                         // Move on to next item
