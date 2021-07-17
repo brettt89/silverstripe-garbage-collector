@@ -1,0 +1,10 @@
+Silverstripe\GarbageCollection\Tests\Ship:
+  ship1:
+    Title: 'TestShip1'
+    Address: 'TestAddress1'
+  ship2:
+    Title: 'TestShip2'
+    Address: 'TestAddress2'
+  ship3:
+    Title: 'TestShip3'
+    Address: 'TestAddress3'

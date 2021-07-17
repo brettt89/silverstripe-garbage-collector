@@ -1,0 +1,24 @@
+{
+    "name": "brettt89/silverstripe-garbage-collection",
+    "description": "Silverstripe Garbage Collection module",
+    "type": "silverstripe-vendormodule",
+    "autoload": {
+        "psr-4": {
+            "SilverStripe\\GarbageCollection\\": "src/",
+            "SilverStripe\\GarbageCollection\\Tests\\": "tests/php/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Brett Tasker",
+            "email": "brett.tasker@gmail.com"
+        }
+    ],
+    "require": {
+        "silverstripe/framework": "^4.7@dev",
+        "symbiote/silverstripe-queuedjobs": "^4.0@dev"
+    },
+    "require-dev": {
+        "sminnee/phpunit": "^5.7"
+    }
+}
