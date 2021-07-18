@@ -8,7 +8,7 @@ abstract class AbstractCollector implements CollectorInterface
 {
     /**
      * Processors used for processing items
-     * 
+     *
      * @var array
      */
     private static $processors = [];
@@ -25,10 +25,10 @@ abstract class AbstractCollector implements CollectorInterface
 
     /**
      * Return an array of ClassNames to be created
-     * 
-     *   ClassNames are used here instead of instantiated objects as 
+     *
+     *   ClassNames are used here instead of instantiated objects as
      *   collections are passed to constructor.
-     * 
+     *
      * @return string[] array of ClassNames of processors
      */
     public function getProcessors(): array

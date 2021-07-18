@@ -46,7 +46,7 @@ class GarbageCollectorJobTest extends SapphireTest
     }
 
     /**
-     * 
+     *
      */
     public function testEmptyCollection()
     {

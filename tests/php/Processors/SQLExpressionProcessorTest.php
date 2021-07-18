@@ -75,7 +75,7 @@ class SQLExpressionProcessorTest extends SapphireTest
         $processor = new SQLExpressionProcessor($expression);
         $count = $processor->process();
         // SQLSelect should be converted to SQLDelete
-        // 2 records should have been removed 
+        // 2 records should have been removed
         $this->assertEquals($count, 2);
 
         // 1 record should remain

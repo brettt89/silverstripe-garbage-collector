@@ -64,7 +64,7 @@ class VersionedCollector extends AbstractCollector
 
     /**
      * Processors used for processing items
-     * 
+     *
      * @var array
      */
     private static $processors = [
@@ -79,7 +79,7 @@ class VersionedCollector extends AbstractCollector
 
     /**
      * Returns array of SQL statements for deletion
-     * 
+     *
      * @return array
      */
     public function getCollections(): array

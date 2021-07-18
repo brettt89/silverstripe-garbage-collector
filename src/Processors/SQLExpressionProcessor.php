@@ -7,10 +7,11 @@ use SilverStripe\ORM\Queries\SQLDelete;
 use SilverStripe\ORM\DB;
 
 class SQLExpressionProcessor extends AbstractProcessor
-{   
+{
+
     /**
      * Expression to delete
-     * 
+     *
      * @var SQLExpression
      */
     private $expression;
@@ -23,11 +24,11 @@ class SQLExpressionProcessor extends AbstractProcessor
     
     /**
      * Execute deletion of records
-     * 
+     *
      * @return int Number of records deleted
      */
     public function process(): int
-    {           
+    {
         // Create SQLDelete statement from SQL provided and execute
         $delete = $this->expression->toDelete();
         $delete->execute();
@@ -37,7 +38,7 @@ class SQLExpressionProcessor extends AbstractProcessor
 
     /**
      * Get name of processor
-     * 
+     *
      * @return string Name of processor
      */
     public function getName(): string

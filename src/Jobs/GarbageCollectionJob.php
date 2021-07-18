@@ -6,7 +6,7 @@ use Exception;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\Queries\SQLConditionalExpression;
 use SilverStripe\ORM\DB;
-use SilverStripe\ORM\DataObject;    
+use SilverStripe\ORM\DataObject;
 use SilverStripe\GarbageCollector\CollectorInterface;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJob;
@@ -17,10 +17,11 @@ use Symbiote\QueuedJobs\Services\QueuedJobService;
  * @property array $remainingVersions
  */
 class GarbageCollectorJob extends AbstractQueuedJob
-{   
+{
+
     /**
      * Constructor
-     * 
+     *
      * @var string
      */
     public function __construct(CollectorInterface $collector, $batchSize = 10)
@@ -69,7 +70,6 @@ class GarbageCollectorJob extends AbstractQueuedJob
 
         // Loop over batched collections and process
         for ($i = 0; $i < $this->batchSize; $i++) {
-
             // check for trivial case
             if (count($remaining) === 0) {
                 $this->isComplete = true;

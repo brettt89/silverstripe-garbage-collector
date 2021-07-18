@@ -10,7 +10,8 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
 
 class GarbageCollectorServiceTest extends SapphireTest
-{   
+{
+
     /**
      * Test collectors via Config yml
      */
@@ -27,7 +28,7 @@ class GarbageCollectorServiceTest extends SapphireTest
         Injector::inst()->registerService($mockCollector1, 'MyTestCollector');
         Injector::inst()->registerService($mockCollector2, 'MyOtherTestCollector');
         
-        $result = Config::withConfig(function(MutableConfigCollectionInterface $config) {
+        $result = Config::withConfig(function (MutableConfigCollectionInterface $config) {
             // update Service to use mock collector
             $config->set(GarbageCollectorService::class, 'collectors', [
                 'MyTestCollector',

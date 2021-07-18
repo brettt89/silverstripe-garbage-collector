@@ -17,7 +17,7 @@ class GarbageCollectorService
     
     /**
      * Collectors registered for processing
-     * 
+     *
      * @var string[] Array of ClassNames for collectors to process
      */
     private static $collectors = [];
@@ -32,7 +32,7 @@ class GarbageCollectorService
 
     /**
      * Array of collectors for processing
-     * 
+     *
      * @return CollectorInterface[] Array of Collectors
      */
     public function getCollectors(): array
