@@ -11,13 +11,23 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
     - name: Setup PHP with PECL extension
       uses: shivammathur/setup-php@v2
       with:
         php-version: '7.4'
-        extensions: intl
-    
+        extensions: intl, mysql, zip, xdebug
+        tools: composer
+
     - uses: actions/checkout@v2
 
     - name: Validate composer.json and composer.lock
@@ -35,8 +45,13 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-scripts --no-plugins
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
-
     - name: Run test suite
       run: composer run-script test
+
+    # - name: Debugging
+    #   if: failure()
+    #   run: |
+    #     ls -lah
+    #     ls -lah /tmp
+    #     ls -lah
+    #     grep -R "Gar" /tmp/silverstripe-cache-*

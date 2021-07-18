@@ -1,7 +1,7 @@
 {
     "name": "brettt89/silverstripe-garbage-collector",
-    "description": "SilverStripe Garbage Collect module",
-    "type": "silverstripe-vendormodule",
+    "description": "SilverStripe Garbage Collector module",
+    "keywords": ["silverstripe", "garbage", "collector"],
     "license": "MIT",
     "autoload": {
         "psr-4": {
@@ -16,14 +16,16 @@
         }
     ],
     "require": {
-        "silverstripe/framework": "^4.7@dev",
-        "symbiote/silverstripe-queuedjobs": "^4.0@dev"
+        "silverstripe/framework": "^4.2",
+        "symbiote/silverstripe-queuedjobs": "^4"
     },
     "require-dev": {
         "sminnee/phpunit": "^5.7",
         "squizlabs/php_codesniffer": "^3"
     },
     "scripts": {
-        "test": "vendor/bin/phpunit"
-    }
+        "test": "vendor/bin/phpunit "
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
