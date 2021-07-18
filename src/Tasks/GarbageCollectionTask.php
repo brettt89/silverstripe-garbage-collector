@@ -14,7 +14,7 @@ class GarbageCollectorTask extends BuildTask
     /**
      * @var string
      */
-    private static $segment = 'garbage-collection-task';
+    private static $segment = 'GarbageCollectionTask';
 
     /**
      * @var string
