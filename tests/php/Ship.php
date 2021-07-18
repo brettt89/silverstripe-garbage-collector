@@ -1,6 +1,6 @@
 <?php
 
-namespace Silverstripe\GarbageCollector\Tests;
+namespace SilverStripe\GarbageCollector\Tests;
 
 use SilverStripe\Dev\TestOnly;
 use SilverStripe\ORM\DataObject;

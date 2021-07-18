@@ -1,13 +1,13 @@
 <?php
 
-namespace Silverstripe\GarbageCollector\Jobs;
+namespace SilverStripe\GarbageCollector\Jobs;
 
 use Exception;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\Queries\SQLConditionalExpression;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\DataObject;    
-use Silverstripe\GarbageCollector\CollectorInterface;
+use SilverStripe\GarbageCollector\CollectorInterface;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJobService;

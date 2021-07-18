@@ -1,6 +1,6 @@
 <?php
 
-namespace Silverstripe\GarbageCollector\Collectors;
+namespace SilverStripe\GarbageCollector\Collectors;
 
 use SilverStripe\Assets\File;
 use SilverStripe\CMS\Model\SiteTree;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Silverstripe\GarbageCollector\Processors;
+namespace SilverStripe\GarbageCollector\Processors;
 
 use SilverStripe\ORM\Queries\SQLExpression;
 use SilverStripe\ORM\Queries\SQLDelete;

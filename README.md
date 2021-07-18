@@ -1,4 +1,4 @@
-# Silverstripe Garbage Collection Module
+# SilverStripe Garbage Collection Module
 
 ## Overview
 

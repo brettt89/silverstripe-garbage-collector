@@ -1,13 +1,13 @@
 <?php
 
-namespace Silverstripe\GarbageCollector\Tasks;
+namespace SilverStripe\GarbageCollector\Tasks;
 
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Core\ClassInfo;
-use Silverstripe\GarbageCollector\GarbageCollectorService;
-use Silverstripe\GarbageCollector\Jobs\GarbageCollectorJob;
+use SilverStripe\GarbageCollector\GarbageCollectorService;
+use SilverStripe\GarbageCollector\Jobs\GarbageCollectorJob;
 
 class GarbageCollectorTask extends BuildTask
 {

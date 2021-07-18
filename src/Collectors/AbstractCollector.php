@@ -1,8 +1,8 @@
 <?php
 
-namespace Silverstripe\GarbageCollector\Collectors;
+namespace SilverStripe\GarbageCollector\Collectors;
 
-use Silverstripe\GarbageCollector\CollectorInterface;
+use SilverStripe\GarbageCollector\CollectorInterface;
 
 abstract class AbstractCollector implements CollectorInterface
 {

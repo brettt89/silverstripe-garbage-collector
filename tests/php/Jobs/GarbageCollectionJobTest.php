@@ -1,13 +1,13 @@
 <?php
 
-namespace Silverstripe\GarbageCollector\Tests\Jobs;
+namespace SilverStripe\GarbageCollector\Tests\Jobs;
 
 use SilverStripe\Dev\SapphireTest;
-use Silverstripe\GarbageCollector\ProcessorInterface;
-use Silverstripe\GarbageCollector\CollectorInterface;
-use Silverstripe\GarbageCollector\Jobs\GarbageCollectorJob;
-use Silverstripe\GarbageCollector\Tests\Ship;
-use Silverstripe\GarbageCollector\Tests\MockProcessor;
+use SilverStripe\GarbageCollector\ProcessorInterface;
+use SilverStripe\GarbageCollector\CollectorInterface;
+use SilverStripe\GarbageCollector\Jobs\GarbageCollectorJob;
+use SilverStripe\GarbageCollector\Tests\Ship;
+use SilverStripe\GarbageCollector\Tests\MockProcessor;
 
 class GarbageCollectorJobTest extends SapphireTest
 {

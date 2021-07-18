@@ -1,4 +1,4 @@
-Silverstripe\GarbageCollector\Tests\Ship:
+SilverStripe\GarbageCollector\Tests\Ship:
   ship1:
     Title: 'TestShip1'
   ship2:

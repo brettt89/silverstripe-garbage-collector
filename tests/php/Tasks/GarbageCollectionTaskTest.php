@@ -1,6 +1,6 @@
 <?php
 
-namespace Silverstripe\GarbageCollector\Tests\Tasks;
+namespace SilverStripe\GarbageCollector\Tests\Tasks;
 
 use SilverStripe\Dev\SapphireTest;
 

@@ -1,6 +1,6 @@
 {
     "name": "brettt89/silverstripe-garbage-collector",
-    "description": "Silverstripe Garbage Collect module",
+    "description": "SilverStripe Garbage Collect module",
     "type": "silverstripe-vendormodule",
     "autoload": {
         "psr-4": {

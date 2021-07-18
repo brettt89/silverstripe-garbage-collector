@@ -1,15 +1,15 @@
 <?php
 
-namespace Silverstripe\GarbageCollector\Tests\Processors;
+namespace SilverStripe\GarbageCollector\Tests\Processors;
 
 use SilverStripe\Dev\SapphireTest;
-use Silverstripe\GarbageCollector\Tests\Ship;
+use SilverStripe\GarbageCollector\Tests\Ship;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Queries\SQLDelete;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\ORM\DB;
-use Silverstripe\GarbageCollector\Processors\SQLExpressionProcessor;
+use SilverStripe\GarbageCollector\Processors\SQLExpressionProcessor;
 
 class SQLExpressionProcessorTest extends SapphireTest
 {

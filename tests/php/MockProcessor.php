@@ -1,9 +1,9 @@
 <?php
 
-namespace Silverstripe\GarbageCollector\Tests;
+namespace SilverStripe\GarbageCollector\Tests;
 
-use Silverstripe\GarbageCollector\ProcessorInterface;
-use Silverstripe\GarbageCollector\Tests\Ship;
+use SilverStripe\GarbageCollector\ProcessorInterface;
+use SilverStripe\GarbageCollector\Tests\Ship;
 
 class MockProcessor implements ProcessorInterface
 {
