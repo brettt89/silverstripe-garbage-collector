@@ -8,6 +8,7 @@ use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Queries\SQLDelete;
 use SilverStripe\ORM\Queries\SQLSelect;
+use SilverStripe\ORM\Queries\SQLExpression;
 use SilverStripe\ORM\DB;
 use SilverStripe\GarbageCollector\Processors\SQLExpressionProcessor;
 
@@ -24,28 +25,6 @@ class SQLExpressionProcessorTest extends SapphireTest
     protected static $extra_dataobjects = [
         Ship::class,
     ];
-
-    public function testGetName()
-    {
-        $class = Ship::class;
-
-        // Create versioned records for testing deletion
-        $model = $this->objFromFixture($class, 'ship1');
-
-        $expression = SQLDelete::create(
-            [
-                $model->baseTable(),
-            ]
-        );
-
-        $processor = new SQLExpressionProcessor($expression);
-        $name = $processor->getName();
-        $this->assertEquals('GarbageCollector_Ship', $name);
-
-        $processor = new SQLExpressionProcessor($expression, 'TestName');
-        $name = $processor->getName();
-        $this->assertEquals('TestName', $name);
-    }
 
     public function testProcess()
     {
@@ -80,5 +59,15 @@ class SQLExpressionProcessorTest extends SapphireTest
 
         // 1 record should remain
         $this->assertEquals(Ship::get()->count(), 1);
+
+        // Ensure basetable is used for name
+        $name = $processor->getName();
+        $this->assertEquals('GarbageCollector_Ship', $name);
+        $this->assertEquals(SQLExpression::class, SQLExpressionProcessor::getImplementorClass());
+
+        // Test overloading naming through constructor
+        $processor = new SQLExpressionProcessor($expression, 'TestName');
+        $name = $processor->getName();
+        $this->assertEquals('TestName', $name);
     }
 }

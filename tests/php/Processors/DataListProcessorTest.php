@@ -3,6 +3,7 @@
 namespace SilverStripe\GarbageCollector\Tests\Processors;
 
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\ORM\DataList;
 use SilverStripe\GarbageCollector\Tests\Ship;
 use SilverStripe\GarbageCollector\Processors\DataListProcessor;
 
@@ -36,5 +37,6 @@ class DataListProcessorTest extends SapphireTest
 
         $processor = new DataListProcessor($list, 'TestName');
         $this->assertEquals('TestName', $processor->getName());
+        $this->assertEquals(DataList::class, DataListProcessor::getImplementorClass());
     }
 }

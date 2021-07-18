@@ -50,7 +50,7 @@ class SQLExpressionProcessor extends AbstractProcessor
         // Use the 'Base Table' of the query as the Classname for Name
         $from = $this->expression->getFrom();
         if (!empty($from) && is_array($from) && count($from) > 0) {
-            $this->setName(array_shift($from));
+            $this->setName(trim(array_shift($from), '"'));
         } else {
             $this->setName('UnknownName');
         }
