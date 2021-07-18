@@ -2,6 +2,7 @@
     "name": "brettt89/silverstripe-garbage-collector",
     "description": "SilverStripe Garbage Collect module",
     "type": "silverstripe-vendormodule",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "SilverStripe\\GarbageCollector\\": "src/",
