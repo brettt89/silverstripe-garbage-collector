@@ -1,13 +1,11 @@
 <?php
 
-namespace Silverstripe\GarbageCollection\Collector;
+namespace Silverstripe\GarbageCollection\Collectors;
 
-use Silverstripe\GarbageCollection\CollectorInterface;
 use SilverStripe\Assets\File;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
-use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\FieldType\DBDatetime;
@@ -17,9 +15,8 @@ use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
 use Symbiote\QueuedJobs\Services\QueuedJobService;
 
-class VersionedCollector implements CollectorInterface
+class VersionedCollector extends AbstractCollector
 {
-    use Injectable;
     use Configurable;
 
     /**
@@ -100,16 +97,6 @@ class VersionedCollector implements CollectorInterface
         }
 
         return $data;
-    }
-
-    /**
-     * Array of ProcessorInterfaces for processing items
-     * 
-     * @return array
-     */
-    public function getProcessors(): array
-    {
-        return $this->config()->get('processors');
     }
 
     /**

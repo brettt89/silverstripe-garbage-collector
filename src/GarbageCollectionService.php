@@ -3,12 +3,11 @@
 namespace Silverstripe\GarbageCollection;
 
 use SilverStripe\Core\Config\Configurable;
-use SilverStripe\Core\Injector\Injectable;
+use SilverStripe\Core\Injector\Injector;
 
 class GarbageCollectionService
 {
     use Configurable;
-    use Injectable;
 
     /**
      * @internal
@@ -19,7 +18,7 @@ class GarbageCollectionService
     /**
      * Collectors registered for processing
      * 
-     * @var array
+     * @var string[] Array of ClassNames for collectors to process
      */
     private static $collectors = [];
 
@@ -34,10 +33,16 @@ class GarbageCollectionService
     /**
      * Array of collectors for processing
      * 
-     * @var array
+     * @return CollectorInterface[] Array of Collectors
      */
     public function getCollectors(): array
     {
-        return $this->config()->get('collectors');
+        $collectors = [];
+        
+        foreach ($this->config()->get('collectors') as $collector) {
+            $collectors[] = Injector::inst()->get($collector);
+        }
+
+        return $collectors;
     }
 }

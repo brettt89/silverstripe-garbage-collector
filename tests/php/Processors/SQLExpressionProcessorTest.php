@@ -40,11 +40,11 @@ class SQLExpressionProcessorTest extends SapphireTest
 
         $processor = new SQLExpressionProcessor($expression);
         $name = $processor->getName();
-        $this->assertEquals($name, 'GarbageCollection_Ship');
+        $this->assertEquals('GarbageCollection_Ship', $name);
 
         $processor = new SQLExpressionProcessor($expression, 'TestName');
         $name = $processor->getName();
-        $this->assertEquals($name, 'TestName');
+        $this->assertEquals('TestName', $name);
     }
 
     public function testProcess()

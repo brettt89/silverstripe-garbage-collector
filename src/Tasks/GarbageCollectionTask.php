@@ -34,8 +34,8 @@ class GarbageCollectionTask extends BuildTask
     {
         $service = QueuedJobService::singleton();
         
-        foreach (GarbageCollectionService::inst()->getCollectors() as $collectorClass) {
-            $job = new GarbageCollectionJob(new $collectorClass());
+        foreach (GarbageCollectionService::inst()->getCollectors() as $collector) {
+            $job = new GarbageCollectionJob($collector);
             $service->queueJob($job);
         }
     }

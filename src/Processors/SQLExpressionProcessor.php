@@ -2,12 +2,11 @@
 
 namespace Silverstripe\GarbageCollection\Processors;
 
-use Silverstripe\GarbageCollection\ProcessorInterface;
 use SilverStripe\ORM\Queries\SQLExpression;
 use SilverStripe\ORM\Queries\SQLDelete;
 use SilverStripe\ORM\DB;
 
-class SQLExpressionProcessor implements ProcessorInterface
+class SQLExpressionProcessor extends AbstractProcessor
 {   
     /**
      * Expression to delete
@@ -15,18 +14,11 @@ class SQLExpressionProcessor implements ProcessorInterface
      * @var SQLExpression
      */
     private $expression;
-
-    /**
-     * Identifier for expression (e.g. Base table name)
-     * 
-     * @var string
-     */
-    private $name;
     
-    public function __construct(SQLExpression $expression, string $name = null)
+    public function __construct(SQLExpression $expression, string $name = '')
     {
         $this->expression = $expression;
-        $this->name = $name;
+        parent::__construct($name);
     }
     
     /**
@@ -50,19 +42,19 @@ class SQLExpressionProcessor implements ProcessorInterface
      */
     public function getName(): string
     {
-        if (isset($this->name) && !empty($this->name)) {
-            return $this->name;
+        if ($name = parent::getName()) {
+            return $name;
         }
         
         // Use the 'Base Table' of the query as the Classname for Name
         $from = $this->expression->getFrom();
         if (!empty($from) && is_array($from) && count($from) > 0) {
-            $this->name = array_shift($from);
+            $this->setName(array_shift($from));
         } else {
-            $this->name = 'UnknownName';
+            $this->setName('UnknownName');
         }
 
-        return $this->name;
+        return parent::getName();
     }
 
     /**
