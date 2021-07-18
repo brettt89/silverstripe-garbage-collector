@@ -1,11 +1,11 @@
 {
-    "name": "brettt89/silverstripe-garbage-collection",
-    "description": "Silverstripe Garbage Collection module",
+    "name": "brettt89/silverstripe-garbage-collector",
+    "description": "Silverstripe Garbage Collect module",
     "type": "silverstripe-vendormodule",
     "autoload": {
         "psr-4": {
-            "SilverStripe\\GarbageCollection\\": "src/",
-            "SilverStripe\\GarbageCollection\\Tests\\": "tests/php/"
+            "SilverStripe\\GarbageCollector\\": "src/",
+            "SilverStripe\\GarbageCollector\\Tests\\": "tests/php/"
         }
     },
     "authors": [

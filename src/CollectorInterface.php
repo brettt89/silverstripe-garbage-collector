@@ -1,6 +1,6 @@
 <?php
 
-namespace Silverstripe\GarbageCollection;
+namespace Silverstripe\GarbageCollector;
 
 use SilverStripe\ORM\Queries\SQLConditionalExpression;
 
@@ -17,7 +17,7 @@ interface CollectorInterface
     public function getCollections(): array;
 
     /**
-     * @return ProcessorInterface[]
+     * @return string[] Array of Processor Classes to be initiated with args
      */
     public function getProcessors(): array;
 }

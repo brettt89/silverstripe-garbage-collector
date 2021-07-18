@@ -1,6 +1,6 @@
 <?php
 
-namespace Silverstripe\GarbageCollection\Collectors;
+namespace Silverstripe\GarbageCollector\Collectors;
 
 use SilverStripe\Assets\File;
 use SilverStripe\CMS\Model\SiteTree;
@@ -59,8 +59,7 @@ class VersionedCollector extends AbstractCollector
      * @var array
      */
     private static $base_classes = [
-        SiteTree::class,
-        File::class
+        SiteTree::class
     ];
 
     /**

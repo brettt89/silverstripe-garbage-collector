@@ -1,12 +1,13 @@
 <?php
 
-namespace Silverstripe\GarbageCollection\Jobs;
+namespace Silverstripe\GarbageCollector\Jobs;
 
 use Exception;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\Queries\SQLConditionalExpression;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\DataObject;    
-use Silverstripe\GarbageCollection\CollectorInterface;
+use Silverstripe\GarbageCollector\CollectorInterface;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJobService;
@@ -15,7 +16,7 @@ use Symbiote\QueuedJobs\Services\QueuedJobService;
  * @property array $versions
  * @property array $remainingVersions
  */
-class GarbageCollectionJob extends AbstractQueuedJob
+class GarbageCollectorJob extends AbstractQueuedJob
 {   
     /**
      * Constructor
@@ -53,6 +54,9 @@ class GarbageCollectionJob extends AbstractQueuedJob
     {
         $collections = $this->collector->getCollections();
         $this->remaining = $collections;
+
+        // Batch processing based on batchSize
+        // ceil is used here to ensure an integer
         $this->totalSteps = ceil(count($collections) / $this->batchSize);
     }
 
@@ -63,6 +67,7 @@ class GarbageCollectionJob extends AbstractQueuedJob
     {
         $remaining = $this->remaining;
 
+        // Loop over batched collections and process
         for ($i = 0; $i < $this->batchSize; $i++) {
 
             // check for trivial case
@@ -103,8 +108,10 @@ class GarbageCollectionJob extends AbstractQueuedJob
                 foreach ($this->processors as $instance => $processor) {
                     if ($item instanceof $instance) {
                         try {
-                            $proc = new $processor($item);
+                            // Use Injector to create processor and execute
+                            $proc = Injector::inst()->create($processor, $item);
                             $records = $proc->process();
+
                             $this->addMessage(sprintf('Processed %d records for %s using %s', $records, get_class($item), $proc->getName()));
                         } catch (Exception $e) {
                             // Log failures and continue;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Silverstripe\GarbageCollection\Collectors;
+namespace Silverstripe\GarbageCollector\Collectors;
 
-use Silverstripe\GarbageCollection\CollectorInterface;
+use Silverstripe\GarbageCollector\CollectorInterface;
 
 abstract class AbstractCollector implements CollectorInterface
 {
@@ -24,6 +24,11 @@ abstract class AbstractCollector implements CollectorInterface
     abstract public function getCollections(): array;
 
     /**
+     * Return an array of ClassNames to be created
+     * 
+     *   ClassNames are used here instead of instantiated objects as 
+     *   collections are passed to constructor.
+     * 
      * @return string[] array of ClassNames of processors
      */
     public function getProcessors(): array

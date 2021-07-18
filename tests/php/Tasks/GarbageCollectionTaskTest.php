@@ -1,10 +1,10 @@
 <?php
 
-namespace Silverstripe\GarbageCollection\Tests\Tasks;
+namespace Silverstripe\GarbageCollector\Tests\Tasks;
 
 use SilverStripe\Dev\SapphireTest;
 
-class GarbageCollectionTaskTest extends SapphireTest
+class GarbageCollectorTaskTest extends SapphireTest
 {   
     public function testCollectors()
     {

@@ -1,15 +1,15 @@
 <?php
 
-namespace Silverstripe\GarbageCollection\Tests\Jobs;
+namespace Silverstripe\GarbageCollector\Tests\Jobs;
 
 use SilverStripe\Dev\SapphireTest;
-use Silverstripe\GarbageCollection\ProcessorInterface;
-use Silverstripe\GarbageCollection\CollectorInterface;
-use Silverstripe\GarbageCollection\Jobs\GarbageCollectionJob;
-use Silverstripe\GarbageCollection\Tests\Ship;
-use Silverstripe\GarbageCollection\Tests\MockProcessor;
+use Silverstripe\GarbageCollector\ProcessorInterface;
+use Silverstripe\GarbageCollector\CollectorInterface;
+use Silverstripe\GarbageCollector\Jobs\GarbageCollectorJob;
+use Silverstripe\GarbageCollector\Tests\Ship;
+use Silverstripe\GarbageCollector\Tests\MockProcessor;
 
-class GarbageCollectionJobTest extends SapphireTest
+class GarbageCollectorJobTest extends SapphireTest
 {
     /**
      * @var string
@@ -34,7 +34,7 @@ class GarbageCollectionJobTest extends SapphireTest
                       ->method('getProcessors')
                       ->will($this->returnValue([MockProcessor::class]));
         
-        $job = new GarbageCollectionJob($mockCollector);
+        $job = new GarbageCollectorJob($mockCollector);
 
         $job->setup();
         $data = $job->getJobData();
@@ -59,7 +59,7 @@ class GarbageCollectionJobTest extends SapphireTest
                       ->method('getProcessors')
                       ->will($this->returnValue([]));
         
-        $job = new GarbageCollectionJob($mockCollector);
+        $job = new GarbageCollectorJob($mockCollector);
         $job->setup();
         $job->process();
 
@@ -81,7 +81,7 @@ class GarbageCollectionJobTest extends SapphireTest
                       ->method('getProcessors')
                       ->will($this->returnValue([]));
         
-        $job = new GarbageCollectionJob($mockCollector);
+        $job = new GarbageCollectorJob($mockCollector);
         $job->setup();
         $job->process();
     }
@@ -109,7 +109,7 @@ class GarbageCollectionJobTest extends SapphireTest
         $mockCollector->method('getProcessors')
                       ->will($this->returnValue([MockProcessor::class]));
         
-        $job = new GarbageCollectionJob($mockCollector);
+        $job = new GarbageCollectorJob($mockCollector);
         $job->setup();
         $job->process();
 

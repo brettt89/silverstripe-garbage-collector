@@ -1,15 +1,15 @@
 <?php
 
-namespace Silverstripe\GarbageCollection\Tasks;
+namespace Silverstripe\GarbageCollector\Tasks;
 
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Core\ClassInfo;
-use Silverstripe\GarbageCollection\GarbageCollectionService;
-use Silverstripe\GarbageCollection\Jobs\GarbageCollectionJob;
+use Silverstripe\GarbageCollector\GarbageCollectorService;
+use Silverstripe\GarbageCollector\Jobs\GarbageCollectorJob;
 
-class GarbageCollectionTask extends BuildTask
+class GarbageCollectorTask extends BuildTask
 {
     /**
      * @var string
@@ -34,8 +34,8 @@ class GarbageCollectionTask extends BuildTask
     {
         $service = QueuedJobService::singleton();
         
-        foreach (GarbageCollectionService::inst()->getCollectors() as $collector) {
-            $job = new GarbageCollectionJob($collector);
+        foreach (GarbageCollectorService::inst()->getCollectors() as $collector) {
+            $job = new GarbageCollectorJob($collector);
             $service->queueJob($job);
         }
     }

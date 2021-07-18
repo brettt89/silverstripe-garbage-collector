@@ -1,6 +1,6 @@
 <?php
 
-namespace Silverstripe\GarbageCollection\Tests;
+namespace Silverstripe\GarbageCollector\Tests;
 
 use SilverStripe\Dev\TestOnly;
 use SilverStripe\ORM\DataObject;
@@ -10,7 +10,7 @@ class Ship extends DataObject implements TestOnly
     /**
      * @var string
      */
-    private static $table_name = 'GarbageCollection_Ship';
+    private static $table_name = 'GarbageCollector_Ship';
 
     /**
      * @var string[]

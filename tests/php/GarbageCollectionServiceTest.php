@@ -1,15 +1,15 @@
 <?php
 
-namespace Silverstripe\GarbageCollection\Tests;
+namespace Silverstripe\GarbageCollector\Tests;
 
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Core\Injector\Injector;
-use Silverstripe\GarbageCollection\CollectorInterface;
-use Silverstripe\GarbageCollection\GarbageCollectionService;
+use Silverstripe\GarbageCollector\CollectorInterface;
+use Silverstripe\GarbageCollector\GarbageCollectorService;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
 
-class GarbageCollectionServiceTest extends SapphireTest
+class GarbageCollectorServiceTest extends SapphireTest
 {   
     /**
      * Test collectors via Config yml
@@ -29,13 +29,13 @@ class GarbageCollectionServiceTest extends SapphireTest
         
         $result = Config::withConfig(function(MutableConfigCollectionInterface $config) {
             // update Service to use mock collector
-            $config->set(GarbageCollectionService::class, 'collectors', [
+            $config->set(GarbageCollectorService::class, 'collectors', [
                 'MyTestCollector',
                 'MyOtherTestCollector'
             ]);
     
             // get Collectors for testing
-            return GarbageCollectionService::inst()->getCollectors();
+            return GarbageCollectorService::inst()->getCollectors();
         });
 
         // Ensure 2 collectors are returned

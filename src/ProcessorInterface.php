@@ -1,6 +1,6 @@
 <?php
 
-namespace Silverstripe\GarbageCollection;
+namespace Silverstripe\GarbageCollector;
 
 interface ProcessorInterface
 {   

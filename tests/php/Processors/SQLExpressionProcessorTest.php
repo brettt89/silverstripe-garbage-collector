@@ -1,15 +1,15 @@
 <?php
 
-namespace Silverstripe\GarbageCollection\Tests\Processors;
+namespace Silverstripe\GarbageCollector\Tests\Processors;
 
 use SilverStripe\Dev\SapphireTest;
-use Silverstripe\GarbageCollection\Tests\Ship;
+use Silverstripe\GarbageCollector\Tests\Ship;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Queries\SQLDelete;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\ORM\DB;
-use Silverstripe\GarbageCollection\Processors\SQLExpressionProcessor;
+use Silverstripe\GarbageCollector\Processors\SQLExpressionProcessor;
 
 class SQLExpressionProcessorTest extends SapphireTest
 {
@@ -40,7 +40,7 @@ class SQLExpressionProcessorTest extends SapphireTest
 
         $processor = new SQLExpressionProcessor($expression);
         $name = $processor->getName();
-        $this->assertEquals('GarbageCollection_Ship', $name);
+        $this->assertEquals('GarbageCollector_Ship', $name);
 
         $processor = new SQLExpressionProcessor($expression, 'TestName');
         $name = $processor->getName();

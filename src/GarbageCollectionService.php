@@ -1,11 +1,11 @@
 <?php
 
-namespace Silverstripe\GarbageCollection;
+namespace Silverstripe\GarbageCollector;
 
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
 
-class GarbageCollectionService
+class GarbageCollectorService
 {
     use Configurable;
 

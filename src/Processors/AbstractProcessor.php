@@ -1,8 +1,8 @@
 <?php
 
-namespace Silverstripe\GarbageCollection\Processors;
+namespace Silverstripe\GarbageCollector\Processors;
 
-use Silverstripe\GarbageCollection\ProcessorInterface;
+use Silverstripe\GarbageCollector\ProcessorInterface;
 
 abstract class AbstractProcessor implements ProcessorInterface
 {   
