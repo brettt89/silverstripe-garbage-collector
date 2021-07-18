@@ -46,12 +46,14 @@ jobs:
       run: composer install --prefer-dist --no-progress --no-scripts --no-plugins
 
     - name: Run test suite
-      run: composer run-script test
+      run: vendor/bin/phpunit --coverage-clover coverage.xml
 
-    # - name: Debugging
-    #   if: failure()
-    #   run: |
-    #     ls -lah
-    #     ls -lah /tmp
-    #     ls -lah
-    #     grep -R "Gar" /tmp/silverstripe-cache-*
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: true
+        verbose: true
