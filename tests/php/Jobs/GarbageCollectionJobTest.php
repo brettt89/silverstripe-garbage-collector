@@ -8,6 +8,7 @@ use SilverStripe\GarbageCollector\CollectorInterface;
 use SilverStripe\GarbageCollector\Jobs\GarbageCollectorJob;
 use SilverStripe\GarbageCollector\Tests\Ship;
 use SilverStripe\GarbageCollector\Tests\MockProcessor;
+use Symbiote\QueuedJobs\Services\QueuedJob;
 
 class GarbageCollectorJobTest extends SapphireTest
 {
@@ -27,6 +28,10 @@ class GarbageCollectorJobTest extends SapphireTest
     {
         $mockCollector = $this->createMock(CollectorInterface::class);
         $mockCollector->expects($this->once())
+                      ->method('getName')
+                      ->will($this->returnValue('MockCollector'));
+
+        $mockCollector->expects($this->once())
                       ->method('getCollections')
                       ->will($this->returnValue([]));
 
@@ -43,6 +48,10 @@ class GarbageCollectorJobTest extends SapphireTest
         $this->assertEquals([Ship::class => MockProcessor::class], $data->jobData->processors);
         $this->assertEquals(0, $data->totalSteps);
         $this->assertEquals([], $data->jobData->remaining);
+
+        // Test JobType and Title
+        $this->assertEquals(QueuedJob::QUEUED, $job->getJobType());
+        $this->assertEquals('Garbage Collection processing for MockCollector collector', $job->getTitle());
     }
 
     /**
@@ -64,6 +73,33 @@ class GarbageCollectorJobTest extends SapphireTest
         $job->process();
 
         $this->assertTrue($job->jobFinished());
+    }
+
+    /**
+     *
+     */
+    public function testUnmatchedCollection()
+    {
+        $mockCollector = $this->createMock(CollectorInterface::class);
+        $mockCollector->expects($this->once())
+                      ->method('getCollections')
+                      ->will($this->returnValue([[new \stdClass()]]));
+
+        $mockCollector->expects($this->once())
+                      ->method('getProcessors')
+                      ->will($this->returnValue([MockProcessor::class]));
+        
+        $job = new GarbageCollectorJob($mockCollector);
+        $job->setup();
+        $job->process();
+
+        $data = $job->getJobData();
+        # Expected 3 times, once for each ship
+        $this->assertContains('[INFO] Unable to find processor for stdClass', array_shift($data->messages));
+        $this->assertEmpty($data->messages);
+
+        $this->assertTrue($job->jobFinished());
+        $this->assertEquals($data->totalSteps, $data->currentStep);
     }
 
     /**
@@ -121,6 +157,7 @@ class GarbageCollectorJobTest extends SapphireTest
 
         # No further messages should exist and job should be completed.
         $this->assertEmpty($data->messages);
+        $this->assertEquals($data->totalSteps, $data->currentStep);
         $this->assertTrue($job->jobFinished());
     }
 }

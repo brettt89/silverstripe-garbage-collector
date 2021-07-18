@@ -68,18 +68,23 @@ class GarbageCollectorJob extends AbstractQueuedJob
     {
         $remaining = $this->remaining;
 
+        // check for trivial case
+        if (count($remaining) === 0) {
+            $this->isComplete = true;
+            return;
+        }
+
+        if (count($this->processors) === 0) {
+            throw new Exception(sprintf('No Processors found for collector %s', $this->collector->getName()));
+        }
+
         // Loop over batched collections and process
         for ($i = 0; $i < $this->batchSize; $i++) {
-            // check for trivial case
+            // If no more processing, break out of loop.
             if (count($remaining) === 0) {
-                $this->isComplete = true;
-                return;
+                break;
             }
-
-            if (count($this->processors) === 0) {
-                throw new Exception(sprintf('No Processors found for collector %s', $this->collector->getName()));
-            }
-
+            
             $collection = array_shift($remaining);
             $this->processCollection($collection);
 
