@@ -3,9 +3,12 @@
 namespace SilverStripe\GarbageCollector\Collectors;
 
 use SilverStripe\GarbageCollector\CollectorInterface;
+use SilverStripe\Core\Config\Configurable;
 
 abstract class AbstractCollector implements CollectorInterface
 {
+    use Configurable;
+    
     /**
      * Processors used for processing items
      *
