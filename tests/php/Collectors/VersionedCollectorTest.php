@@ -55,7 +55,7 @@ class VersionedCollectorTest extends SapphireTest
         }
         DBDatetime::set_mock_now($mockDate);
 
-        $records = Config::withConfig(function(MutableConfigCollectionInterface $config) use ($deletion_limit) {
+        $records = Config::withConfig(function (MutableConfigCollectionInterface $config) use ($deletion_limit) {
             // Add Ship to base_classes for VersionedCollector
             $config->set(VersionedCollector::class, 'base_classes', [ Ship::class ]);
 

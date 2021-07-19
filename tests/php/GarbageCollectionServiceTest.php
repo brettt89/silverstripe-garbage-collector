@@ -30,7 +30,7 @@ class GarbageCollectorServiceTest extends SapphireTest
     private $mockCollector2;
     
     public function setUp()
-    {       
+    {
         $this->logger = new \Monolog\Handler\TestHandler();
 
         $this->service = GarbageCollectorService::inst();
@@ -58,7 +58,7 @@ class GarbageCollectorServiceTest extends SapphireTest
      * Test collectors via Config yml
      */
     public function testGetCollectors()
-    {        
+    {
         $result = Config::withConfig(function (MutableConfigCollectionInterface $config) {
             // update Service to use mock collector
             $config->set(GarbageCollectorService::class, 'collectors', [

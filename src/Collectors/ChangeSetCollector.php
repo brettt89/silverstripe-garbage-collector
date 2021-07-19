@@ -66,7 +66,7 @@ class ChangeSetCollector extends AbstractCollector
 
     /**
      * Get ChangeSet Id's ready for deletion
-     * 
+     *
      * @return array
      */
     private function getChangeSetIDs()

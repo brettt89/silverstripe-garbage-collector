@@ -38,8 +38,8 @@ SilverStripe\GarbageCollector\Collectors\ChangeSetCollector:
 # Register collectors with service
 SilverStripe\GarbageCollector\GarbageCollectorService:
   collectors:
-	- 'SilverStripe\GarbageCollector\Collectors\VersionedCollector'
-	- 'SilverStripe\GarbageCollector\Collectors\ChangeSetCollector'
+    - 'SilverStripe\GarbageCollector\Collectors\VersionedCollector'
+    - 'SilverStripe\GarbageCollector\Collectors\ChangeSetCollector'
 ```
 
 Now we just need to define an execution for the GarbageCollectorService by calling `GarbageCollectorService::inst()->process();`. You may decide to do this in a BuildTask or Job depending on how you want to execute Garbage Collection (e.g. Crontab).
@@ -55,31 +55,31 @@ use SilverStripe\ORM\FieldType\DBDatetime;
 
 class MyCollector extends AbstractCollector
 {
-	private  static  $processors = [
-		DataListProcessor::class
-	];
-	
-	public function getName(): string
-	{
-		return 'MyCustomCollector';
-	}
+    private  static  $processors = [
+        DataListProcessor::class
+    ];
+    
+    public function getName(): string
+    {
+        return 'MyCustomCollector';
+    }
 
-	public  function  getCollections(): array
-	{
-		$collection = [];
+    public  function  getCollections(): array
+    {
+        $collection = [];
 
-		// Filter grabs MyObject records older than 10 days
-		$dateFilter = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822());
-				->modify('- 10 days')
-				->Rfc2822();
-		
-		// Add Datalist to Collection
-		$collection[] = LogRecords::get()->filter([
-			'DateCreated:LessThanOrEqual' => $dateFilter
-		]);
+        // Filter grabs MyObject records older than 10 days
+        $dateFilter = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822());
+                ->modify('- 10 days')
+                ->Rfc2822();
+        
+        // Add Datalist to Collection
+        $collection[] = LogRecords::get()->filter([
+            'DateCreated:LessThanOrEqual' => $dateFilter
+        ]);
 
-		return $collection;
-	}
+        return $collection;
+    }
 {
 ```
 
@@ -91,7 +91,7 @@ Name: MyGarbageCollectors
 ---
 SilverStripe\GarbageCollector\GarbageCollectorService:
   collectors:
-	- 'MyCollector'
+    - 'MyCollector'
 ```
 
 ### Running Garbage Collection
@@ -125,8 +125,8 @@ Garbage Collector Service is used as a register for collectors to be processed. 
 ```
 SilverStripe\GarbageCollector\GarbageCollectorService:
   collectors:
-	- MyCollector
-	- MyOtherCollector
+    - MyCollector
+    - MyOtherCollector
 ```
 Registered collectors can be obtained statically from the service by using `GarbageCollectorService::inst()->getCollectors()`.
 

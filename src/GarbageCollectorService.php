@@ -34,7 +34,7 @@ class GarbageCollectorService
 
     /**
      * Public method for setting logger
-     * 
+     *
      * @param LoggerInterface $logger
      */
     public function setLogger($logger)
@@ -44,7 +44,7 @@ class GarbageCollectorService
 
     /**
      * @return self
-     * 
+     *
      * Uses Injector for dependancies instead of static
      */
     public static function inst()
@@ -103,7 +103,7 @@ class GarbageCollectorService
 
     /**
      * Process array of Collection using array of Processors (if matching)
-     * 
+     *
      * @param array $collection Array of collection data
      * @param array $processors Array of Processors
      */

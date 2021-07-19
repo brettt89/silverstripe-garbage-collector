@@ -12,7 +12,6 @@ use SilverStripe\GarbageCollector\Tests\Ship;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
 
-
 class ChangeSetCollectorTest extends SapphireTest
 {
     /**
@@ -56,7 +55,7 @@ class ChangeSetCollectorTest extends SapphireTest
         }
         DBDatetime::set_mock_now($mockDate);
 
-        $records = Config::withConfig(function(MutableConfigCollectionInterface $config) use ($deletion_limit) {
+        $records = Config::withConfig(function (MutableConfigCollectionInterface $config) use ($deletion_limit) {
             if (isset($deletion_limit)) {
                 $config->set(ChangeSetCollector::class, 'deletion_limit', $deletion_limit);
             }
