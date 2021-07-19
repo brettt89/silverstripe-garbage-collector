@@ -4,7 +4,6 @@ namespace SilverStripe\GarbageCollector;
 
 interface ProcessorInterface
 {
-
     /**
      * @return string Name for logging of processor
      */

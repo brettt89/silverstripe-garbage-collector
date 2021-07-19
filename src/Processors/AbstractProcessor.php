@@ -36,7 +36,13 @@ abstract class AbstractProcessor implements ProcessorInterface
     }
 
     /**
-     * Classes the implement this class can use this processor
+     * Classes that implement this class can use this processor
      */
     abstract public function getImplementorClass(): string;
+
+    /**
+     * Execute process against collection
+     * @return int Number of processed records
+     */
+    abstract public function process(): int;
 }
