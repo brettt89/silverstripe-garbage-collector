@@ -7,7 +7,7 @@
 
 ## Overview
 
-Method for processing Garbage Collection on Database Records. It is based on an SQL statement being provided through interfaced methods that can be executed to cleanup records.
+Module for defining and processing Garbage Collection on SilverStripe Applications.
 
 ## Installation
 
@@ -17,11 +17,11 @@ composer require brettt89/silverstripe-garbage-collection
 
 ## How to use
 
-Garbage Collector uses a combination of "Collectors" and "Processors" to perform garbage collection for a SilverStripe application.
+This Garbage Collector module provides a handful of collectors that can be used with this module. See [./src/Collectors](Collectors).
 
 ### Basic Usage
 
-Some default collectors are available for usage immediately with this module. The below example shows how you can enable and configure the VersionedCollector and ChangeSetCollector for your application.
+ The below example shows how you can enable and configure the VersionedCollector and ChangeSetCollector for your application.
 
 ```yml
 ---
