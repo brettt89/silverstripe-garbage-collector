@@ -23,6 +23,7 @@ class VersionedCollector extends AbstractCollector
 {
     use Configurable;
     use Extensible;
+
     /**
      * Number of latest versions which will always be kept
      *
@@ -375,7 +376,7 @@ class VersionedCollector extends AbstractCollector
             );
         }
 
-        $this->extend('updateDeleteVersionsQuery', $query, $class, $item);
+        $this->extend('updateDeleteVersionsQuery', $query, $class);
 
         return $query;
     }
@@ -389,15 +390,22 @@ class VersionedCollector extends AbstractCollector
     public function getTablesListForClass(string $class): array
     {
         $classes = ClassInfo::ancestry($class, true);
-        $tables = [ 'base' => [] ];
+        $tables = [];
 
         foreach ($classes as $currentClass) {
-            $tables['base'][] = $this->getVersionTableName($this->getTableNameForClass($currentClass));
+            $tables[] = $this->getTableNameForClass($currentClass);
         }
 
-        $this->extend('updateTablesListForClass', $class, $tables);
+        $baseTables = [];
+        foreach ($tables as $table) {
+            $baseTables[] = $this->getVersionTableName($table);
+        }
 
-        return $tables;
+        $return['base'] = $baseTables;
+
+        $this->extend('updateTablesListForClass', $class, $tables, $return);
+
+        return $return;
     }
 
     /**

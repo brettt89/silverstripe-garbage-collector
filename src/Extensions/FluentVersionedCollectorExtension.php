@@ -3,6 +3,7 @@
 namespace SilverStripe\GarbageCollector\Extensions;
 
 use SilverStripe\Core\Extension;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Queries\SQLDelete;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\GarbageCollector\Collectors\VersionedCollector;
@@ -17,7 +18,7 @@ class FluentVersionedCollectorExtension extends Extension
      * @param SQLSelect $query
      * @param string $class
      */
-    public function updateGetRecordsQuery(SQLSelect $query, string $class): void
+    public function updateGetRecordsQuery(SQLSelect &$query, string $class)
     {
         if ($this->isLocalised($class)) {
             $mainTable = $this->owner->getTableNameForClass($class);
@@ -28,7 +29,7 @@ class FluentVersionedCollectorExtension extends Extension
             $query
                 // Join through to the localised table
                 // Version numbers map one to one
-                ->addInnerJoin(
+                ->addLeftJoin(
                     $localisedTableRaw,
                     sprintf(
                         '%1$s."RecordID" = %2$s."RecordID" AND %1$s."Version" = %2$s."Version"',
@@ -59,7 +60,7 @@ class FluentVersionedCollectorExtension extends Extension
      * @param array  $item      Item details for returning
      * @param array  $result    Query result data
      */
-    public function updateRecordsData(string $class, array $item, array $result): void
+    public function updateRecordsData(string $class, array &$item, array $result)
     {        
         if ($this->isLocalised($class)) {
             // Add additional locale data for localised records
@@ -74,7 +75,7 @@ class FluentVersionedCollectorExtension extends Extension
      * @param string    $class  Classname of records
      * @param array     $item   Item details
      */
-    public function updateGetVersionsQuery(SQLSelect $query, string $class, array $item): void
+    public function updateGetVersionsQuery(SQLSelect &$query, string $class, array $item)
     {
         $locale = array_key_exists('locale', $item)
                     ? $item['locale']
@@ -89,7 +90,7 @@ class FluentVersionedCollectorExtension extends Extension
             $query
                 // Join through to the localised table
                 // Version numbers map one to one
-                ->addInnerJoin(
+                ->addLeftJoin(
                     $localisedTableRaw,
                     sprintf(
                         '%1$s."RecordID" = %2$s."RecordID" AND %1$s."Version" = %2$s."Version"',
@@ -109,14 +110,44 @@ class FluentVersionedCollectorExtension extends Extension
     /**
      * Modify getRecords return data to include Locale data
      * 
+     * @param string $class   Classname of records
+     * @param array  $tables  Tables list data for class
+     */
+    public function updateTablesListForClass(string $class, array $tables, array &$return)
+    {
+        // Include localised tables if needed
+        /** @var DataObject|FluentExtension $singleton */
+        $singleton = DataObject::singleton($class);
+
+        if ($singleton->hasExtension(FluentVersionedExtension::class)) {
+            $localisedTables = [];
+            $localisedDataTables = array_keys($singleton->getLocalisedTables());
+
+            foreach ($tables as $table) {
+                if (!in_array($table, $localisedDataTables)) {
+                    // Skip any tables that do not contain localised data
+                    continue;
+                }
+
+                $localisedTables[] = $this->getVersionLocalisedTableName($table);
+            }
+
+            // Add localised Table data to Tables List
+            $return['localised'] = $localisedTables;
+        }
+    }
+
+    /**
+     * Modify getRecords return data to include Locale data
+     * 
      * @param SQLDelete $query  Delete query for Version records
      * @param string    $class  Classname of records
      * @param array     $item   Item details
      */
-    public function updateDeleteVersionsQuery(SQLDelete $query, string $class, array $item): void
+    public function updateDeleteVersionsQuery(SQLDelete &$query, string $class)
     {
         $tables = $this->owner->getTablesListForClass($class);
-        $baseTables = $tables['base'];
+        $baseTable = sprintf('"%s"', $tables['base'][0]);
         $localisedTables = $tables['localised'];
 
         // Add localised table to the join and deletion
@@ -144,33 +175,6 @@ class FluentVersionedCollectorExtension extends Extension
     }
 
     /**
-     * Modify getRecords return data to include Locale data
-     * 
-     * @param string $class   Classname of records
-     * @param array  $tables  Tables list data for class
-     */
-    public function updateTablesListForClass(string $class, array $tables)
-    {
-        // Include localised tables if needed
-        if ($singleton->hasExtension(FluentVersionedExtension::class)) {
-            $localisedTables = [];
-            $localisedDataTables = array_keys($singleton->getLocalisedTables());
-
-            foreach ($tables as $table) {
-                if (!in_array($table, $localisedDataTables)) {
-                    // Skip any tables that do not contain localised data
-                    continue;
-                }
-
-                $localisedTables[] = $this->getVersionLocalisedTableName($table);
-            }
-
-            // Add localised Table data to Tables List
-            $tables['localised'] = $localisedTables;
-        }
-    }
-
-    /**
      * Check if Class is Localised (Has Fluent extension and Localised fields)
      * 
      * @param string $class
@@ -178,10 +182,29 @@ class FluentVersionedCollectorExtension extends Extension
      */
     protected function isLocalised(string $class): bool
     {
-        /** @var DataObject|FluentExtension $singleton */
-        $singleton = DataObject::singleton($class);
-        return $singleton->hasExtension(FluentVersionedExtension::class)
-            && count($singleton->getLocalisedFields()) > 0;
+        return $this->hasExtension($class) && $this->hasLocalizedFields($class);
+    }
+
+    /**
+     * Check if Class has FluentVersionedExtension
+     * 
+     * @param string $class
+     * @return bool
+     */
+    protected function hasExtension(string $class): bool
+    {
+        return DataObject::singleton($class)->hasExtension(FluentVersionedExtension::class);
+    }
+
+    /**
+     * Check if Class has localized fields
+     * 
+     * @param string $class
+     * @return bool
+     */
+    protected function hasLocalizedFields(string $class): bool
+    {
+        return ( count(DataObject::singleton($class)->getLocalisedFields()) > 0 );
     }
 
     /**
