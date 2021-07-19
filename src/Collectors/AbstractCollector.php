@@ -4,6 +4,7 @@ namespace SilverStripe\GarbageCollector\Collectors;
 
 use SilverStripe\GarbageCollector\CollectorInterface;
 use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Core\Config\Config;
 
 abstract class AbstractCollector implements CollectorInterface
 {
@@ -36,6 +37,6 @@ abstract class AbstractCollector implements CollectorInterface
      */
     public function getProcessors(): array
     {
-        return $this->config()->get('processors');
+        return $this->config()->get('processors', Config::EXCLUDE_EXTRA_SOURCES | Config::UNINHERITED);
     }
 }

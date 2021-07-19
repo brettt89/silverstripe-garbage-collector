@@ -12,7 +12,7 @@ class DataListProcessorTest extends SapphireTest
     /**
      * @var string
      */
-    protected static $fixture_file = 'tests/php/SQLTest.yml';
+    protected static $fixture_file = 'tests/php/Models.yml';
 
     /**
      * @var string[]
