@@ -13,7 +13,7 @@ interface ProcessorInterface
     /**
      * @return string ImplementorClass
      */
-    public static function getImplementorClass(): string;
+    public function getImplementorClass(): string;
 
     /**
      * @return int Number of processed records

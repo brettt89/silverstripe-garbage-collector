@@ -38,5 +38,5 @@ abstract class AbstractProcessor implements ProcessorInterface
     /**
      * Classes the implement this class can use this processor
      */
-    abstract public static function getImplementorClass(): string;
+    abstract public function getImplementorClass(): string;
 }

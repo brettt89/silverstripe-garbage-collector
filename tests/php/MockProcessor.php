@@ -8,11 +8,11 @@ use SilverStripe\GarbageCollector\Tests\Ship;
 
 class MockProcessor implements ProcessorInterface, TestOnly
 {
-    private $return;
+    private $return = 0;
     
-    public function __construct($item)
+    public function __construct($return)
     {
-        $this->return = 4;
+        $this->return = is_int($return) ? $return : (is_array($return) ? count($return) : 1);
     }
     
     public function getName(): string
@@ -20,7 +20,7 @@ class MockProcessor implements ProcessorInterface, TestOnly
         return 'MockProcessor';
     }
     
-    public static function getImplementorClass(): string
+    public function getImplementorClass(): string
     {
         return Ship::class;
     }
@@ -28,10 +28,5 @@ class MockProcessor implements ProcessorInterface, TestOnly
     public function process(): int
     {
         return $this->return;
-    }
-
-    public function returnValue($return)
-    {
-        $this->return = $return;
     }
 }

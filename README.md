@@ -1,4 +1,3 @@
-
 # SilverStripe Garbage Collection Module
 
 [![PHPUnit](https://github.com/brettt89/silverstripe-garbage-collector/actions/workflows/php.yml/badge.svg)](https://github.com/brettt89/silverstripe-garbage-collector/actions/workflows/php.yml) [![codecov](https://codecov.io/gh/brettt89/silverstripe-garbage-collector/branch/master/graph/badge.svg?token=FEEEJP8377)](https://codecov.io/gh/brettt89/silverstripe-garbage-collector)
@@ -20,9 +19,34 @@ composer require brettt89/silverstripe-garbage-collection
 
 Garbage Collector uses a combination of "Collectors" and "Processors" to perform garbage collection for a SilverStripe application.
 
-### Basis Usage
+### Basic Usage
 
-In order to use the Garbage Collector, you will need to define your own Collector. Below is a basic example of a collector.
+Some default collectors are available for usage immediately with this module. The below example shows how you can enable and configure the VersionedCollector and ChangeSetCollector for your application.
+
+```yml
+---
+Name: GarbageCollectors
+---
+SilverStripe\GarbageCollector\Collectors\VersionedCollector:
+  # Increase Versioned keep limit to 10 records
+  keep_limit: 10
+
+SilverStripe\GarbageCollector\Collectors\ChangeSetCollector:
+  # Reduce Changeset Lifetime to 10 days
+  deletion_lifetime: 10
+
+# Register collectors with service
+SilverStripe\GarbageCollector\GarbageCollectorService:
+  collectors:
+	- 'SilverStripe\GarbageCollector\Collectors\VersionedCollector'
+	- 'SilverStripe\GarbageCollector\Collectors\ChangeSetCollector'
+```
+
+Now we just need to define an execution for the GarbageCollectorService by calling `GarbageCollectorService::inst()->process();`. You may decide to do this in a BuildTask or Job depending on how you want to execute Garbage Collection (e.g. Crontab).
+
+### Advanced Usage
+
+You can define your own custom Collectors to be used for Garbage Collection. The below example is a basic Collector example that uses the `DataListProcessor`.
 
 ```
 use SilverStripe\GarbageCollector\Collectors\AbstractCollector;
@@ -59,15 +83,11 @@ class MyCollector extends AbstractCollector
 {
 ```
 
-The above example `MyCollector` return a `DataList` of `LogRecords`, that have a 'Created Date' older than 10 days, and process them using the `DataListProcessor`;
-
-#### Registering your Collectors
-
-The `GarbageCollectionService` is used to keep a register of Collectors that are processed during Garbage Collection execution. You can use YML to define Collectors for your application.
+The above example `MyCollector` return a `DataList` of `LogRecords`, that have a 'Created Date' older than 10 days, and process them using the `DataListProcessor`. Now all that we need to do is register our Collector with the `GarbageCollectorService`.
 
 ```
 ---
-Name: GarbageCollectors
+Name: MyGarbageCollectors
 ---
 SilverStripe\GarbageCollector\GarbageCollectorService:
   collectors:
@@ -76,16 +96,9 @@ SilverStripe\GarbageCollector\GarbageCollectorService:
 
 ### Running Garbage Collection
 
-The execution of Garbage Collection uses the [Silverstripe QueuedJobs](https://github.com/symbiote/silverstripe-queuedjobs/) module to run all registered collectors with the `GarbageCollectionService`.
+Garbage Collection can be triggerred by calling `GarbageCollectorService::inst()->process();`. You may want to implement this into a recurring method such as QueuedJobs or BuildTasks for reoccuring execution.
 
-Build task `GarbageCollectionTask` is available for executing collectors registered with the `GarbageCollectorService` on your environment.
-
-```
-./vendor/bin/sake dev/tasks/GarbageCollectionTask
-```
-Alternatively you can write your own implementation and use `GarbageCollectorService::inst()->getCollectors()` to obtain registered collectors for processing.
-
-### Components
+## Components
 
 Garbage Collection is based on the idea of removal/processing of records and items that may not have native garbage collection. This should be extendable to work with any type of data set as long as there are corresponding processors.
 
@@ -103,11 +116,11 @@ Processors are used to process the items collected by a collector for removal. T
 
 The method `getImplementorClass()` is used to identify which data set in the collection this Processor applies to.
 
-#### Garbage Collection Service
+#### Garbage Collector Service
 
 See: [GarbageCollectorService.php](./src/GarbageCollectorService.php)
 
-Garbage Collection Service is used as a register for collectors to be processed. Registering collections can be done via [SilverStripe's Configuration API](https://docs.silverstripe.org/en/4/developer_guides/configuration/configuration/) as this class is Configurable.
+Garbage Collector Service is used as a register for collectors to be processed. Registering collections can be done via [SilverStripe's Configuration API](https://docs.silverstripe.org/en/4/developer_guides/configuration/configuration/) as this class is Configurable.
 
 ```
 SilverStripe\GarbageCollector\GarbageCollectorService:
@@ -116,3 +129,24 @@ SilverStripe\GarbageCollector\GarbageCollectorService:
 	- MyOtherCollector
 ```
 Registered collectors can be obtained statically from the service by using `GarbageCollectorService::inst()->getCollectors()`.
+
+## Reporting Issues
+
+Please [create an issue](https://github.com/brettt89/silverstripe-garbage-collector/issues) for any bugs you've found, or features you're missing.
+
+## License
+
+This module is released under the [MIT License](LICENSE)
+
+## Credits
+
+This project is made possible by the community surrounding it and especially the wonderful people and projects listed in this document.
+
+### Contributors
+
+- Brett Tasker (https://github.com/brettt89)
+- Mojmir Fendek (https://github.com/mfendeksilverstripe)
+
+### Libraries
+
+#### [silverstripe/framework] (https://github.com/silverstripe/silverstripe-framework)

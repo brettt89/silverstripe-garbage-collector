@@ -37,6 +37,6 @@ class DataListProcessorTest extends SapphireTest
 
         $processor = new DataListProcessor($list, 'TestName');
         $this->assertEquals('TestName', $processor->getName());
-        $this->assertEquals(DataList::class, DataListProcessor::getImplementorClass());
+        $this->assertEquals(DataList::class, $processor->getImplementorClass());
     }
 }

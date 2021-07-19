@@ -63,7 +63,7 @@ class SQLExpressionProcessorTest extends SapphireTest
         // Ensure basetable is used for name
         $name = $processor->getName();
         $this->assertEquals('GarbageCollector_Ship', $name);
-        $this->assertEquals(SQLExpression::class, SQLExpressionProcessor::getImplementorClass());
+        $this->assertEquals(SQLExpression::class, $processor->getImplementorClass());
 
         // Test overloading naming through constructor
         $processor = new SQLExpressionProcessor($expression, 'TestName');

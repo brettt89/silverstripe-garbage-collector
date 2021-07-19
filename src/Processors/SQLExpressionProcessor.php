@@ -61,7 +61,7 @@ class SQLExpressionProcessor extends AbstractProcessor
     /**
      * Classes the implement this class can use this processor
      */
-    public static function getImplementorClass(): string
+    public function getImplementorClass(): string
     {
         return SQLExpression::class;
     }
