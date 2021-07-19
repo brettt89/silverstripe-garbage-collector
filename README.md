@@ -7,7 +7,7 @@
 
 ## Overview
 
-Module for defining and processing Garbage Collection on SilverStripe Applications.
+SilverStripe Module for defining and processing Garbage Collection on SilverStripe Applications.
 
 ## Installation
 
@@ -15,11 +15,7 @@ Module for defining and processing Garbage Collection on SilverStripe Applicatio
 composer require brettt89/silverstripe-garbage-collection
 ```
 
-## How to use
-
-This Garbage Collector module provides a handful of collectors that can be used with this module. See [./src/Collectors](Collectors).
-
-### Basic Usage
+## Basic Usage
 
  The below example shows how you can enable and configure the VersionedCollector and ChangeSetCollector for your application.
 
@@ -44,91 +40,19 @@ SilverStripe\GarbageCollector\GarbageCollectorService:
 
 Now we just need to define an execution for the GarbageCollectorService by calling `GarbageCollectorService::inst()->process();`. You may decide to do this in a BuildTask or Job depending on how you want to execute Garbage Collection (e.g. Crontab).
 
-### Advanced Usage
-
-You can define your own custom Collectors to be used for Garbage Collection. The below example is a basic Collector example that uses the `DataListProcessor`.
-
-```
-use SilverStripe\GarbageCollector\Collectors\AbstractCollector;
-use SilverStripe\GarbageCollector\Processors\DataListProcessor;
-use SilverStripe\ORM\FieldType\DBDatetime;
-
-class MyCollector extends AbstractCollector
-{
-    private  static  $processors = [
-        DataListProcessor::class
-    ];
-    
-    public function getName(): string
-    {
-        return 'MyCustomCollector';
-    }
-
-    public  function  getCollections(): array
-    {
-        $collection = [];
-
-        // Filter grabs MyObject records older than 10 days
-        $dateFilter = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822());
-                ->modify('- 10 days')
-                ->Rfc2822();
-        
-        // Add Datalist to Collection
-        $collection[] = LogRecords::get()->filter([
-            'DateCreated:LessThanOrEqual' => $dateFilter
-        ]);
-
-        return $collection;
-    }
-{
-```
-
-The above example `MyCollector` return a `DataList` of `LogRecords`, that have a 'Created Date' older than 10 days, and process them using the `DataListProcessor`. Now all that we need to do is register our Collector with the `GarbageCollectorService`.
-
-```
----
-Name: MyGarbageCollectors
----
-SilverStripe\GarbageCollector\GarbageCollectorService:
-  collectors:
-    - 'MyCollector'
-```
-
-### Running Garbage Collection
-
-Garbage Collection can be triggerred by calling `GarbageCollectorService::inst()->process();`. You may want to implement this into a recurring method such as QueuedJobs or BuildTasks for reoccuring execution.
-
-## Components
+## Documentation
 
 Garbage Collection is based on the idea of removal/processing of records and items that may not have native garbage collection. This should be extendable to work with any type of data set as long as there are corresponding processors.
 
-#### Collectors
+### Components
 
-See: [AbstractCollector.php](./src/Collectors/AbstractCollector.php)
+ - [Collectors](./docs/en/Collectors.md)
+ - [Processors](./docs/en/Processors.md)
+ - [Garbage Collector Service](./docs/en/Garbage-Collector-Service.md)
 
-Collectors are used as a method of collecting data to be processed for deletion. The type of collection used here is matched up to Processors for performing garbage collection of those items.
+### Guides
 
-#### Processors
-
-See: [AbstractProcessor.php](./src/Processors/AbstractProcessor.php)
-
-Processors are used to process the items collected by a collector for removal. There are some basic Processors included in this module that can be used, however you can also create your own Processors for custom data sets.
-
-The method `getImplementorClass()` is used to identify which data set in the collection this Processor applies to.
-
-#### Garbage Collector Service
-
-See: [GarbageCollectorService.php](./src/GarbageCollectorService.php)
-
-Garbage Collector Service is used as a register for collectors to be processed. Registering collections can be done via [SilverStripe's Configuration API](https://docs.silverstripe.org/en/4/developer_guides/configuration/configuration/) as this class is Configurable.
-
-```
-SilverStripe\GarbageCollector\GarbageCollectorService:
-  collectors:
-    - MyCollector
-    - MyOtherCollector
-```
-Registered collectors can be obtained statically from the service by using `GarbageCollectorService::inst()->getCollectors()`.
+ - [Advanced Usage](./docs/en/Advanced-Usage.md)
 
 ## Reporting Issues
 
