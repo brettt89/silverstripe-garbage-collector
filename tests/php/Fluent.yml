@@ -1,0 +1,14 @@
+TractorCow\Fluent\Model\Locale:
+  uk:
+    Locale: en_GB
+    APIURLSegment: uk
+    Title: 'United Kingdom'
+    URLSegment: uk
+    AlacrityMarket: en
+  us:
+    Locale: en_US
+    Title: 'United States'
+    URLSegment: us
+    AlacrityMarket: us
+    Fallbacks:
+      - =>TractorCow\Fluent\Model\Locale.uk

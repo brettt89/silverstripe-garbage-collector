@@ -23,6 +23,7 @@ class VersionedCollector extends AbstractCollector
 {
     use Configurable;
     use Extensible;
+
     /**
      * Number of latest versions which will always be kept
      *
@@ -198,7 +199,7 @@ class VersionedCollector extends AbstractCollector
                 $recordLimit
             );
 
-            $this->extend('getRecordsForDeletionQuery', $query);
+            $this->extend('updateGetRecordsQuery', $query, $class);
 
             $results = $query->execute();
 
@@ -212,6 +213,8 @@ class VersionedCollector extends AbstractCollector
                 $item = [
                     'id' => (int) $result['RecordID'],
                 ];
+
+                $this->extend('updateRecordsData', $class, $item, $result);
 
                 $data[] = $item;
             }
@@ -283,7 +286,7 @@ class VersionedCollector extends AbstractCollector
                     ]
                 );
 
-                $this->extend('getVersionsForDeletionQuery', $query);
+                $this->extend('updateGetVersionsQuery', $query, $baseClass, $item);
 
                 $results = $query->execute();
 
@@ -332,7 +335,8 @@ class VersionedCollector extends AbstractCollector
             return 0;
         }
 
-        $baseTables = $this->getTablesListForClass($class);
+        $tables = $this->getTablesListForClass($class);
+        $baseTables = $tables['base'];
 
         if (count($baseTables) === 0) {
             return 0;
@@ -372,7 +376,7 @@ class VersionedCollector extends AbstractCollector
             );
         }
 
-        $this->extend('deleteVersionsQuery', $query);
+        $this->extend('updateDeleteVersionsQuery', $query, $class);
 
         return $query;
     }
@@ -383,7 +387,7 @@ class VersionedCollector extends AbstractCollector
      * @param string $class
      * @return array[]
      */
-    protected function getTablesListForClass(string $class): array
+    public function getTablesListForClass(string $class): array
     {
         $classes = ClassInfo::ancestry($class, true);
         $tables = [];
@@ -392,7 +396,16 @@ class VersionedCollector extends AbstractCollector
             $tables[] = $this->getTableNameForClass($currentClass);
         }
 
-        return $tables;
+        $baseTables = [];
+        foreach ($tables as $table) {
+            $baseTables[] = $this->getVersionTableName($table);
+        }
+
+        $return['base'] = $baseTables;
+
+        $this->extend('updateTablesListForClass', $class, $tables, $return);
+
+        return $return;
     }
 
     /**
@@ -401,7 +414,7 @@ class VersionedCollector extends AbstractCollector
      * @param string $class
      * @return string
      */
-    protected function getTableNameForClass(string $class): string
+    public function getTableNameForClass(string $class): string
     {
         $table = DataObject::singleton($class)
             ->config()
@@ -417,7 +430,7 @@ class VersionedCollector extends AbstractCollector
      * @param string $table
      * @return string
      */
-    protected function getVersionTableName(string $table): string
+    public function getVersionTableName(string $table): string
     {
         return $table . '_Versions';
     }

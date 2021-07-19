@@ -74,13 +74,17 @@ class VersionedCollectorTest extends SapphireTest
         }
 
         // Loop over expected results and check
-        foreach ($expected as $key => $exptectedData) {
+        foreach ($expected as $key => $expectedData) {
             $where = $records[$key]->getWhere();
+            $delete = $records[$key]->getDelete();
+
+            $this->assertSame($expectedData['tables'], $delete);
+
             $recordWhere = array_shift($where);
             $versionWhere = array_shift($where);
 
-            $this->assertSame($exptectedData['recordId'], array_shift($recordWhere)[0]);
-            $this->assertSame($exptectedData['versionIds'], array_shift($versionWhere));
+            $this->assertSame($expectedData['recordId'], array_shift($recordWhere)[0]);
+            $this->assertSame($expectedData['versionIds'], array_shift($versionWhere));
         }
     }
 
@@ -96,7 +100,10 @@ class VersionedCollectorTest extends SapphireTest
                 [
                     [
                         'recordId' => 2,
-                        'versionIds' => [ 1, 2, 3 ]
+                        'versionIds' => [ 1, 2, 3 ],
+                        'tables' => [
+                            '"GarbageCollector_Ship_Versions"'
+                        ]
                     ]
                 ]
             ],
@@ -106,11 +113,17 @@ class VersionedCollectorTest extends SapphireTest
                 [
                     [
                         'recordId' => 3,
-                        'versionIds' => [ 1, 2 ]
+                        'versionIds' => [ 1, 2 ],
+                        'tables' => [
+                            '"GarbageCollector_Ship_Versions"'
+                        ]
                     ],
                     [
                         'recordId' => 3,
-                        'versionIds' => [ 3, 4 ]
+                        'versionIds' => [ 3, 4 ],
+                        'tables' => [
+                            '"GarbageCollector_Ship_Versions"'
+                        ]
                     ]
                 ],
                 2
