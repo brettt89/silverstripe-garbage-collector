@@ -79,15 +79,28 @@ class GarbageCollectorService
     }
 
     /**
-     * @param CollectorInterface $collector Collector to process
+     * Array of processors for processing
+     *
+     * @return ProcessorInterface[] Array of Processors
      */
-    public function processCollector(CollectorInterface $collector)
+    public function getProcessors(CollectorInterface $collector): array
     {
         $processors = [];
+
         // Group processor by class to reduce duplication
         foreach ($collector->getProcessors() as $processor) {
             $processors[Injector::inst()->get($processor)->getImplementorClass()] = $processor;
         }
+
+        return $processors;
+    }
+
+    /**
+     * @param CollectorInterface $collector Collector to process
+     */
+    public function processCollector(CollectorInterface $collector)
+    {
+        $processors = $this->getProcessors($collector);
 
         // If no processors are present, skip.
         if (empty($processors)) {
