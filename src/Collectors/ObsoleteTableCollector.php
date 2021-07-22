@@ -8,7 +8,6 @@ use SilverStripe\GarbageCollector\Collectors\AbstractCollector;
 use SilverStripe\GarbageCollector\Processors\RawSQLProcessor;
 use SilverStripe\GarbageCollector\Models\RawSQL;
 
-
 class ObsoleteTableCollector extends AbstractCollector
 {
     /**
@@ -22,7 +21,7 @@ class ObsoleteTableCollector extends AbstractCollector
 
     /**
      * Obsolete table prefix used for identifying obsolete tables
-     * 
+     *
      * @config
      * @var string
      */
@@ -49,13 +48,9 @@ class ObsoleteTableCollector extends AbstractCollector
         $collection = [];
 
         $tables = DB::query(sprintf('SHOW TABLES LIKE \'%s%%\'', Convert::raw2sql($table_prefix)))->column();
+        
         if (empty($tables)) {
             return $collection;
-        }
-
-        // We expect query to return array of results
-        if (!is_array($tables)) {
-            throw new \Exception('SHOW TABLES query returned unexpected non-array result');
         }
 
         foreach ($tables as $table) {

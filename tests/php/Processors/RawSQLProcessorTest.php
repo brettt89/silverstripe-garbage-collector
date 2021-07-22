@@ -43,5 +43,10 @@ class RawSQLProcessorTest extends SapphireTest
         $this->assertEquals(1, $count);
         // 0 tables should remain
         $this->assertCount(0, $result);
+
+        // Ensure basetable is used for name
+        $name = $processor->getName();
+        $this->assertEquals('RawSQLProcessor', $name);
+        $this->assertEquals(RawSQL::class, $processor->getImplementorClass());
     }
 }
