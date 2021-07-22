@@ -61,3 +61,6 @@ The `ChangeSetCollector` class is used to get ChangeSet Database records that ar
 > \* Array of Strings
 > \** Replacement for 'SQLExpressionProcessor::class' evaluation
 
+## ObsoleteTable Collector
+
+The `ObsoleteTableCollector` class is used to get `_obsolete_` Database tables and provides a collection of `RawSQL` Statements that will remove all these tables when executed.
