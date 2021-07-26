@@ -16,6 +16,6 @@ The `SQLExpressionProcessor` class is more advanced processor which is used exec
 
 ## RawSQL Processor
 
-The `RawSQLProcessor` class is a basic processor which i used to execute raw SQL directly on the SilverStripe Application's Database. A Custom Model is provided so that Implementor Class matching can occur on the provided query.
+The `RawSQLProcessor` class is a basic processor which is used to execute raw SQL directly on the SilverStripe Application's Database. A Custom Model is provided so that Implementor Class matching can occur on the provided query.
 
 **Implementor Class:** `SilverStripe\GarbageCollector\Models\RawSQL`
