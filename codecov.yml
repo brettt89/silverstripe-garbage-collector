@@ -1,0 +1,4 @@
+ignore:
+  - "tests/"
+  - "docs/"
+  - "src/Models/RawSQL.php"
