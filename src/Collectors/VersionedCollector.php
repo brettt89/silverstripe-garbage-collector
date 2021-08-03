@@ -74,7 +74,6 @@ class VersionedCollector extends AbstractCollector
         SQLExpressionProcessor::class,
     ];
 
-    
     public function getName(): string
     {
         return 'VersionedCollector';
@@ -312,7 +311,7 @@ class VersionedCollector extends AbstractCollector
                 if (count($data) === 0) {
                     continue;
                 }
-                
+
                 $versions[$baseClass][$recordId] = $data;
             }
         }

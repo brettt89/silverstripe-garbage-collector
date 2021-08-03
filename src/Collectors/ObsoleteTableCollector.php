@@ -26,7 +26,7 @@ class ObsoleteTableCollector extends AbstractCollector
      * @var string
      */
     private static $table_prefix = '_obsolete_';
-    
+
     /**
      * Processors used for processing items
      *
@@ -48,7 +48,7 @@ class ObsoleteTableCollector extends AbstractCollector
         $collection = [];
 
         $tables = DB::query(sprintf('SHOW TABLES LIKE \'%s%%\'', Convert::raw2sql($table_prefix)))->column();
-        
+
         if (empty($tables)) {
             return $collection;
         }

@@ -17,7 +17,7 @@ class GarbageCollectorService
      * @var self
      */
     private static $instance;
-    
+
     /**
      * Collectors registered for processing
      *
@@ -60,7 +60,7 @@ class GarbageCollectorService
     public function getCollectors(): array
     {
         $collectors = [];
-        
+
         foreach ($this->config()->get('collectors') as $collector) {
             $collectors[] = Injector::inst()->get($collector);
         }

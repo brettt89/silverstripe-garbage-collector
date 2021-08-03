@@ -42,7 +42,7 @@ class RawSQLProcessor extends AbstractProcessor
         if ($name = parent::getName()) {
             return $name;
         }
-        
+
         return 'RawSQLProcessor';
     }
 

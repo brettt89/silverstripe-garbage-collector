@@ -13,7 +13,7 @@ abstract class AbstractProcessor implements ProcessorInterface
      * @var string
      */
     private $name = '';
-    
+
     /**
      * Assign name to processor
      */
@@ -21,7 +21,7 @@ abstract class AbstractProcessor implements ProcessorInterface
     {
         $this->setName($name);
     }
-    
+
     /**
      * @return string Name of Processor
      */

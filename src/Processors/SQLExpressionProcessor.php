@@ -46,7 +46,7 @@ class SQLExpressionProcessor extends AbstractProcessor
         if ($name = parent::getName()) {
             return $name;
         }
-        
+
         // Use the 'Base Table' of the query as the Classname for Name
         $from = $this->expression->getFrom();
         if (!empty($from) && is_array($from) && count($from) > 0) {

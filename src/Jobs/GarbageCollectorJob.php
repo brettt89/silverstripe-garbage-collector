@@ -24,7 +24,7 @@ class GarbageCollectorJob extends AbstractQueuedJob
      * @var \Monolog\Handler\HandlerInterface
      */
     private $logger;
-    
+
     /**
      * Constructor
      *
