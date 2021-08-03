@@ -9,7 +9,7 @@ SilverStripe Module for defining and processing Garbage Collection on SilverStri
 ## Installation
 
 ```
-composer require brettt89/silverstripe-garbage-collection
+composer require brettt89/silverstripe-garbage-collector
 ```
 
 ## Basic Usage
