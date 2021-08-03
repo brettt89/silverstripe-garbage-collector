@@ -45,7 +45,7 @@ class GarbageCollectorService
     /**
      * @return self
      *
-     * Uses Injector for dependancies instead of static
+     * Uses Injector for dependencies instead of static
      */
     public static function inst()
     {

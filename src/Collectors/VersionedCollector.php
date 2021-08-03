@@ -2,10 +2,7 @@
 
 namespace SilverStripe\GarbageCollector\Collectors;
 
-use SilverStripe\GarbageCollector\Collectors\AbstractCollector;
 use SilverStripe\GarbageCollector\Processors\SQLExpressionProcessor;
-use SilverStripe\Assets\File;
-use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Config\Configurable;
@@ -15,9 +12,7 @@ use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\Queries\SQLExpression;
 use SilverStripe\ORM\Queries\SQLDelete;
 use SilverStripe\ORM\Queries\SQLSelect;
-use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
-use Symbiote\QueuedJobs\Services\QueuedJobService;
 
 class VersionedCollector extends AbstractCollector
 {
@@ -161,9 +156,6 @@ class VersionedCollector extends AbstractCollector
         $records = [];
 
         foreach ($classes as $class) {
-            /** @var DataObject $singleton */
-            $singleton = DataObject::singleton($class);
-
             $mainTable = $this->getTableNameForClass($class);
             $baseTableRaw = $this->getVersionTableName($mainTable);
             $baseTable = sprintf('"%s"', $baseTableRaw);

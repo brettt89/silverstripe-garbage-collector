@@ -4,7 +4,6 @@ namespace SilverStripe\GarbageCollector\Collectors;
 
 use SilverStripe\Core\Convert;
 use SilverStripe\ORM\DB;
-use SilverStripe\GarbageCollector\Collectors\AbstractCollector;
 use SilverStripe\GarbageCollector\Processors\RawSQLProcessor;
 use SilverStripe\GarbageCollector\Models\RawSQL;
 
@@ -55,7 +54,7 @@ class ObsoleteTableCollector extends AbstractCollector
 
         foreach ($tables as $table) {
             if (in_array(substr($table, strlen($table_prefix)), $this->config()->get('skip_tables'))) {
-                // If tablename without prefix is in "skip_tables" config, then skip.
+                // If table name without prefix is in "skip_tables" config, then skip.
                 continue;
             }
 

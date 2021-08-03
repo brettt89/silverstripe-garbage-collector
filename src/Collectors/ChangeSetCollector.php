@@ -2,7 +2,6 @@
 
 namespace SilverStripe\GarbageCollector\Collectors;
 
-use SilverStripe\GarbageCollector\Collectors\AbstractCollector;
 use SilverStripe\GarbageCollector\Processors\SQLExpressionProcessor;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\FieldType\DBDatetime;

@@ -2,8 +2,6 @@
 
 namespace SilverStripe\GarbageCollector;
 
-use SilverStripe\ORM\Queries\SQLConditionalExpression;
-
 interface CollectorInterface
 {
     /**

@@ -6,7 +6,6 @@ use SilverStripe\Core\Extension;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Queries\SQLDelete;
 use SilverStripe\ORM\Queries\SQLSelect;
-use SilverStripe\GarbageCollector\Collectors\VersionedCollector;
 use TractorCow\Fluent\Extension\FluentExtension;
 use TractorCow\Fluent\Extension\FluentVersionedExtension;
 
@@ -142,7 +141,6 @@ class FluentVersionedCollectorExtension extends Extension
      *
      * @param SQLDelete $query  Delete query for Version records
      * @param string    $class  Classname of records
-     * @param array     $item   Item details
      */
     public function updateDeleteVersionsQuery(SQLDelete &$query, string $class)
     {
