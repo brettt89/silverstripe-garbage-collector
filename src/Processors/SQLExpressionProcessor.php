@@ -14,22 +14,38 @@ class SQLExpressionProcessor extends AbstractProcessor
      * @var SQLExpression
      */
     private $expression;
-    
-    public function __construct(SQLExpression $expression, string $name = '')
+
+    public function __construct(SQLExpression $expression = null, string $name = '')
     {
         $this->expression = $expression;
         parent::__construct($name);
     }
-    
+
+    /**
+     * Get internal SQL expression
+     *
+     * @return SQLExpression
+     * @throws \Exception
+     */
+    protected function getExpression(): SQLExpression
+    {
+        if (!is_a($this->expression, SQLExpression::class)) {
+            throw new \Exception(static::class . ' requires a SQLExpression provided via its constructor.');
+        }
+
+        return $this->expression;
+    }
+
     /**
      * Execute deletion of records
      *
      * @return int Number of records deleted
+     * @throws \Exception
      */
     public function process(): int
     {
         // Create SQLDelete statement from SQL provided and execute
-        $delete = $this->expression->toDelete();
+        $delete = $this->getExpression()->toDelete();
         $delete->execute();
 
         return DB::affected_rows();
@@ -39,6 +55,7 @@ class SQLExpressionProcessor extends AbstractProcessor
      * Get name of processor
      *
      * @return string Name of processor
+     * @throws \Exception
      */
     public function getName(): string
     {
@@ -47,7 +64,7 @@ class SQLExpressionProcessor extends AbstractProcessor
         }
 
         // Use the 'Base Table' of the query as the Classname for Name
-        $from = $this->expression->getFrom();
+        $from = $this->getExpression()->getFrom();
         if (!empty($from) && is_array($from) && count($from) > 0) {
             $this->setName(trim(array_shift($from), '"'));
         } else {

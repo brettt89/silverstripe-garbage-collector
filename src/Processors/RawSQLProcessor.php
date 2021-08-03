@@ -14,21 +14,37 @@ class RawSQLProcessor extends AbstractProcessor
      * @var RawSQL
      */
     private $query;
-    
-    public function __construct(RawSQL $query, string $name = '')
+
+    public function __construct(RawSQL $query = null, string $name = '')
     {
         $this->query = $query;
         parent::__construct($name);
     }
-    
+
+    /**
+     * Get internal query
+     *
+     * @return RawSQL
+     * @throws \Exception
+     */
+    protected function getQuery(): RawSQL
+    {
+        if (!is_a($this->query, RawSQL::class)) {
+            throw new \Exception(static::class . ' requires a RawSQL provided via its constructor.');
+        }
+
+        return $this->query;
+    }
+
     /**
      * Execute query
      *
      * @return int Always 1 as its a single SQL query being executed
+     * @throws \Exception
      */
     public function process(): int
     {
-        DB::query($this->query->sql());
+        DB::query($this->getQuery()->sql());
         return 1;
     }
 
