@@ -411,9 +411,7 @@ class VersionedCollector extends AbstractCollector
      */
     public function getTableNameForClass(string $class): string
     {
-        $table = DataObject::singleton($class)
-            ->config()
-            ->uninherited('table_name');
+        $table = DataObject::getSchema()->baseDataTable($class);
 
         // Fallback to class name if no table name is specified
         return $table ?: $class;
