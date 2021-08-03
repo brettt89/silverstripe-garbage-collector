@@ -104,7 +104,11 @@ class VersionedCollector extends AbstractCollector
 
                         do {
                             $batch = array_splice($versions, 0, $this->config()->get('deletion_version_limit'));
-                            $collections[] = $this->deleteVersionsQuery($class, $recordId, $batch);
+                            $query = $this->deleteVersionsQuery($class, $recordId, $batch);
+
+                            if ($query) {
+                                $collections[] = $query;
+                            }
                         } while (!empty($versions) && count($collections) <= $this->config()->get('query_limit'));
                     }
                 }
@@ -317,20 +321,20 @@ class VersionedCollector extends AbstractCollector
      * @param string $class
      * @param int $recordId
      * @param array $versions
-     * @return SQLExpression
+     * @return SQLExpression|null
      */
-    protected function deleteVersionsQuery(string $class, int $recordId, array $versions): SQLExpression
+    protected function deleteVersionsQuery(string $class, int $recordId, array $versions): ?SQLExpression
     {
         if (count($versions) === 0) {
             // Nothing to delete
-            return 0;
+            return null;
         }
 
         $tables = $this->getTablesListForClass($class);
         $baseTables = $tables['base'];
 
         if (count($baseTables) === 0) {
-            return 0;
+            return null;
         }
 
         // We can assume first table is the base table
