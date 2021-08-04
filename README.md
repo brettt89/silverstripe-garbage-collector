@@ -23,6 +23,9 @@ Name: GarbageCollectors
 SilverStripe\GarbageCollector\Collectors\VersionedCollector:
   # Increase Versioned keep limit to 10 records
   keep_limit: 10
+  # Define base classes to collect versions for
+  base_classes:
+    - SilverStripe\CMS\Model\SiteTree
 
 SilverStripe\GarbageCollector\Collectors\ChangeSetCollector:
   # Reduce Changeset Lifetime to 10 days
