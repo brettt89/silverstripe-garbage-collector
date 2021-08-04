@@ -12,7 +12,7 @@ class MockCollector extends AbstractCollector implements TestOnly
     private static $processors = [
         MockProcessor::class
     ];
-    
+
     public function getName(): string
     {
         return 'MockCollector';

@@ -49,7 +49,7 @@ class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
     ];
 
     protected function setUp(): void
-    {   
+    {
         FluentState::singleton()->withState(function (FluentState $state): void {
             $state->setLocale('en_GB');
             parent::setUp();
@@ -72,7 +72,7 @@ class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
     }
 
     public function collectionsProvider(): array
-    {       
+    {
         return [
             'Localised / No versions passed lifetime' => [
                 'ship1'

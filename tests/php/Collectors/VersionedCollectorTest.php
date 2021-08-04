@@ -25,7 +25,7 @@ class VersionedCollectorTest extends SapphireTest
     protected static $extra_dataobjects = [
         Ship::class,
     ];
-    
+
     /**
      * @var string[][]
      */

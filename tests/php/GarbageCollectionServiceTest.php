@@ -23,12 +23,12 @@ class GarbageCollectorServiceTest extends SapphireTest
     protected static $extra_dataobjects = [
         Ship::class,
     ];
-    
+
     private $service;
     private $logger;
     private $mockCollector1;
     private $mockCollector2;
-    
+
     public function setUp()
     {
         $this->logger = new \Monolog\Handler\TestHandler();
@@ -42,7 +42,7 @@ class GarbageCollectorServiceTest extends SapphireTest
         $this->mockCollector1 = $this->createMock(CollectorInterface::class);
         $this->mockCollector1->method('getName')
                              ->will($this->returnValue('MyTestCollector'));
-                       
+
         $this->mockCollector2 = $this->createMock(CollectorInterface::class);
         $this->mockCollector2->method('getName')
                              ->will($this->returnValue('MyOtherTestCollector'));
@@ -53,7 +53,7 @@ class GarbageCollectorServiceTest extends SapphireTest
 
         parent::setUp();
     }
-    
+
     /**
      * Test collectors via Config yml
      */
@@ -65,7 +65,7 @@ class GarbageCollectorServiceTest extends SapphireTest
                 'MyTestCollector',
                 'MyOtherTestCollector'
             ]);
-    
+
             // get Collectors for testing
             return GarbageCollectorService::inst()->getCollectors();
         });
@@ -87,13 +87,13 @@ class GarbageCollectorServiceTest extends SapphireTest
         $this->mockCollector1->expects($this->once())
                              ->method('getProcessors')
                              ->will($this->returnValue([]));
-        
+
         Config::withConfig(function (MutableConfigCollectionInterface $config) {
             // update Service to use mock collector
             $config->set(GarbageCollectorService::class, 'collectors', [
                 'MyTestCollector'
             ]);
-    
+
             // get Collectors for testing
             return $this->service->process();
         });
@@ -103,7 +103,7 @@ class GarbageCollectorServiceTest extends SapphireTest
 
     public function testNoCollectionsProcessors()
     {
-        
+
         $this->service->processCollection([], []);
         $this->assertTrue($this->logger->hasNoticeThatContains('No Processors provided for Collection'));
     }
@@ -112,7 +112,7 @@ class GarbageCollectorServiceTest extends SapphireTest
     {
         $mockProcessor = new MockProcessor(2);
         Injector::inst()->registerService($mockProcessor, 'MyProcessor');
-        
+
         $this->mockCollector1->expects($this->once())
                              ->method('getProcessors')
                              ->will($this->returnValue(['MyProcessor']));
@@ -122,13 +122,13 @@ class GarbageCollectorServiceTest extends SapphireTest
                              ->will($this->returnValue([
                                  [ new \stdClass() ]
                              ]));
-        
+
         Config::withConfig(function (MutableConfigCollectionInterface $config) {
             // update Service to use mock collector
             $config->set(GarbageCollectorService::class, 'collectors', [
                 'MyTestCollector'
             ]);
-    
+
             // get Collectors for testing
             return $this->service->processCollector($this->mockCollector1);
         });
@@ -155,13 +155,13 @@ class GarbageCollectorServiceTest extends SapphireTest
                              ->will($this->returnValue([
                                  [ $collection ]
                              ]));
-        
+
         $result = Config::withConfig(function (MutableConfigCollectionInterface $config) use ($collection) {
             // update Service to use mock collector
             $config->set(GarbageCollectorService::class, 'collectors', [
                 'MyTestCollector'
             ]);
-    
+
             // get Collectors for testing
             return $this->service->process();
         });
