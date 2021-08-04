@@ -34,6 +34,13 @@ class VersionedCollector extends AbstractCollector
     private static $keep_lifetime = 180;
 
     /**
+     * Determine whether we keep unpublished draft versions (newer than latest published version)
+     *
+     * @var bool
+     */
+    private static $keep_unpublished_drafts = true;
+
+    /**
      * Number of records processed in one deletion run per base class
      *
      * @var int
@@ -154,6 +161,7 @@ class VersionedCollector extends AbstractCollector
     {
         $keepLimit = (int) $this->config()->get('keep_limit');
         $recordLimit = (int) $this->config()->get('deletion_record_limit');
+        $keepUnpublishedDrafts = (bool) $this->config()->get('keep_unpublished_drafts');
         $deletionDate = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822())
             ->modify(sprintf('- %d days', $this->config()->get('keep_lifetime')))
             ->Rfc2822();
@@ -189,10 +197,22 @@ class VersionedCollector extends AbstractCollector
                 ],
                 [
                     // Need to have more old versions than the allowed limit
-                    'COUNT(*) > ?' => $keepLimit,
+                    'COUNT(1) > ?' => $keepLimit,
                 ],
                 $recordLimit
             );
+
+            if ($keepUnpublishedDrafts) {
+                $query->addInnerJoin(
+                    // table
+                    '(SELECT "RecordID", MAX("Version") as MaxPublishedVersion FROM ' . $baseTable . ' WHERE "WasPublished" = 1 GROUP BY RecordID)',
+                    // on predicate
+                    $baseTable . '."RecordID" = "MaxVersionSelect"."RecordID"',
+                    // table alias
+                    'MaxVersionSelect',
+                );
+                $query->addWhere($baseTable . '."Version" < "MaxVersionSelect"."MaxPublishedVersion"');
+            }
 
             $this->extend('updateGetRecordsQuery', $query, $class);
 
@@ -234,6 +254,7 @@ class VersionedCollector extends AbstractCollector
     {
         $keepLimit = (int) $this->config()->get('keep_limit');
         $versionLimit = (int) $this->config()->get('deletion_version_limit') * $this->config()->get('query_limit');
+        $keepUnpublishedDrafts = (bool) $this->config()->get('keep_unpublished_drafts');
         $deletionDate = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822())
             ->modify(sprintf('- %d days', $this->config()->get('keep_lifetime')))
             ->Rfc2822();
@@ -280,6 +301,18 @@ class VersionedCollector extends AbstractCollector
                         'start' => $keepLimit,
                     ]
                 );
+
+                if ($keepUnpublishedDrafts) {
+                    $query->addInnerJoin(
+                        // table
+                        '(SELECT "RecordID", MAX("Version") as MaxPublishedVersion FROM ' . $baseTable . ' WHERE "WasPublished" = 1 GROUP BY RecordID)',
+                        // on predicate
+                        $baseTable . '."RecordID" = "MaxVersionSelect"."RecordID"',
+                        // table alias
+                        'MaxVersionSelect',
+                    );
+                    $query->addWhere($baseTable . '."Version" < "MaxVersionSelect"."MaxPublishedVersion"');
+                }
 
                 $this->extend('updateGetVersionsQuery', $query, $baseClass, $item);
 
