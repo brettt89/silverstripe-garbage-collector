@@ -141,17 +141,18 @@ class GarbageCollectorService
                         $proc = Injector::inst()->create($processor, $collection);
                         $records = $proc->process();
 
-                        $this->logger->info(sprintf('Processed %d records for %s using %s', $records, get_class($item), $proc->getName()));
+                        $this->logger->info(sprintf('Processed %d records for %s using %s', $records, get_class($collection), $proc->getName()));
                     } catch (\Exception $e) {
                         // Log failures and continue;
                         // TODO: Stop re-processing of failed deletion records and expose it for audit.
                         $this->logger->error(sprintf('Unable to process records: "%s"', $e->getMessage()));
                     }
 
-                    // Move on to next item
-                    continue;
+                    // Item processed, move on
+                    return;
                 }
             }
+
             // No processor was able to be found.
             $this->logger->notice(sprintf('Unable to find processor for %s', get_class($collection)));
         }
