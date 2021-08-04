@@ -34,11 +34,11 @@ class VersionedCollector extends AbstractCollector
     private static $keep_lifetime = 180;
 
     /**
-     * Determine whether we keep unpublished draft versions (newer than latest published version)
+     * Determine whether to keep unpublished draft versions (newer than latest published version)
      *
      * @var bool
      */
-    private static $keep_unpublished_drafts = true;
+    private static $keep_unpublished_drafts = false;
 
     /**
      * Number of records processed in one deletion run per base class
