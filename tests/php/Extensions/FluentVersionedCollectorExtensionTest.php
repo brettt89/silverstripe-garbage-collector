@@ -52,13 +52,23 @@ class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
     }
 
     /**
-     * @param string $class
-     * @param string $now
+     * @param string $id
+     * @param ?string $modifyDate
      * @param array $expected
+     * @param ?int $deletion_limit
+     * @param ?int $keep_limit
+     * @param bool $keep_unpublished_drafts
      * @throws ValidationException
      * @dataProvider collectionsProvider
      */
-    public function testGetCollections(string $id, string $modifyDate = null, array $expected = [], int $deletion_limit = null): void
+    public function testGetCollections(
+        string $id,
+        string $modifyDate = null,
+        array $expected = [],
+        int $deletion_limit = null,
+        int $keep_limit = null,
+        bool $keep_unpublished_drafts = false
+    ): void
     {
         FluentState::singleton()->withState(function (FluentState $state) use ($id, $modifyDate, $expected, $deletion_limit): void {
             $state->setLocale('en_GB');

@@ -39,10 +39,20 @@ class VersionedCollectorTest extends SapphireTest
      * @param string $id
      * @param ?string $modifyDate
      * @param array $expected
+     * @param ?int $deletion_limit
+     * @param ?int $keep_limit
+     * @param bool $keep_unpublished_drafts
      * @throws ValidationException
      * @dataProvider collectionsProvider
      */
-    public function testGetCollections(string $id, string $modifyDate = null, array $expected = [], int $deletion_limit = null): void
+    public function testGetCollections(
+        string $id,
+        string $modifyDate = null,
+        array $expected = [],
+        int $deletion_limit = null,
+        int $keep_limit = null,
+        bool $keep_unpublished_drafts = false
+    ): void
     {
         $model = $this->objFromFixture(Ship::class, $id);
         $this->createTestVersions($model);
@@ -54,13 +64,23 @@ class VersionedCollectorTest extends SapphireTest
         }
         DBDatetime::set_mock_now($mockDate);
 
-        $records = Config::withConfig(function (MutableConfigCollectionInterface $config) use ($deletion_limit) {
+        $records = Config::withConfig(function (MutableConfigCollectionInterface $config) use ($deletion_limit, $keep_limit, $keep_unpublished_drafts) {
             // Add Ship to base_classes for VersionedCollector
             $config->set(VersionedCollector::class, 'base_classes', [ Ship::class ]);
 
             // If we are using a custom deletion limit for test, apply it
             if (isset($deletion_limit)) {
                 $config->set(VersionedCollector::class, 'deletion_version_limit', $deletion_limit);
+            }
+
+            // If we are using a custom keep limit for test, apply it
+            if (isset($keep_limit)) {
+                $config->set(VersionedCollector::class, 'keep_limit', $keep_limit);
+            }
+
+            // If we keep unpublished flags, set the config
+            if ($keep_unpublished_drafts) {
+                $config->set(VersionedCollector::class, 'keep_unpublished_drafts', $keep_unpublished_drafts);
             }
 
             $collector = new VersionedCollector();
@@ -106,7 +126,7 @@ class VersionedCollectorTest extends SapphireTest
                     ]
                 ]
             ],
-            'Versions passed lifetime, Multi Query' => [
+            'Versions passed lifetime, Multi Query, Keep one version ' => [
                 'ship3',
                 '+ 185 days',
                 [
@@ -123,10 +143,48 @@ class VersionedCollectorTest extends SapphireTest
                         'tables' => [
                             '"GarbageCollector_Ship_Versions"'
                         ]
+                    ],
+                    [
+                        'recordId' => 3,
+                        'versionIds' => [ 6 ],
+                        'tables' => [
+                            '"GarbageCollector_Ship_Versions"'
+                        ]
                     ]
                 ],
-                2
-            ]
+                2, // delete in batch of 2
+                1, // only keep 1 draft version
+            ],
+            'Only versions before first published, keep only 1 draft' => [
+                'ship4',
+                '+ 1 year',
+                [
+                    [
+                        'recordId' => 4,
+                        // 5 is published as it's the 4th version after the initial object is created
+                        // when creating the mock version data, every 3rd version is published
+                        // (creating draft and published, so two versions, hence 4th in the row)
+                        'versionIds' => [ 1, 2, 3, 4, 6],
+                        'tables' => [
+                            '"GarbageCollector_Ship_Versions"',
+                        ],
+                    ],
+                    [
+                        'recordId' => 4,
+                        // 9 is published as it's 4th versions after 5 etc., see the longer explanation above
+                        // 12 is not present as it's within the keep limit
+                        // 13 is the latest published version (4th version after 9)
+                        // 14 is the version newer than latest published version and we keep unpublished drafts
+                        'versionIds' => [ 7, 8, 10, 11],
+                        'tables' => [
+                            '"GarbageCollector_Ship_Versions"',
+                        ],
+                    ],
+                ],
+                5, // delete in batch of 5
+                1, // only keep one draft version
+                true, // keep unpublished drafts
+            ],
         ];
     }
 
