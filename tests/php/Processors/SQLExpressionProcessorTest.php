@@ -4,9 +4,6 @@ namespace SilverStripe\GarbageCollector\Tests\Processors;
 
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\GarbageCollector\Tests\Ship;
-use SilverStripe\ORM\FieldType\DBDatetime;
-use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\Queries\SQLDelete;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\ORM\Queries\SQLExpression;
 use SilverStripe\ORM\DB;
@@ -60,7 +57,7 @@ class SQLExpressionProcessorTest extends SapphireTest
         // 1 record should remain
         $this->assertEquals(Ship::get()->count(), 1);
 
-        // Ensure basetable is used for name
+        // Ensure base table is used for name
         $name = $processor->getName();
         $this->assertEquals('GarbageCollector_Ship', $name);
         $this->assertEquals(SQLExpression::class, $processor->getImplementorClass());

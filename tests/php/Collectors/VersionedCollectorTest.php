@@ -6,7 +6,7 @@ use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\GarbageCollector\Collectors\VersionedCollector;
-use SilverStripe\GarbageCollector\GarbageCollectorService;
+use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\GarbageCollector\Tests\Ship;
 use SilverStripe\Core\Config\Config;
@@ -36,8 +36,8 @@ class VersionedCollectorTest extends SapphireTest
     ];
 
     /**
-     * @param string $class
-     * @param string $now
+     * @param string $id
+     * @param ?string $modifyDate
      * @param array $expected
      * @throws ValidationException
      * @dataProvider collectionsProvider
@@ -46,7 +46,6 @@ class VersionedCollectorTest extends SapphireTest
     {
         $model = $this->objFromFixture(Ship::class, $id);
         $this->createTestVersions($model);
-        $baseClass = $model->baseClass();
 
         // Modify date for expiration
         $mockDate = DBDatetime::now();
@@ -134,7 +133,7 @@ class VersionedCollectorTest extends SapphireTest
     /**
      * @param DataObject|Versioned $model
      * @throws ValidationException
-     * @throws Exception
+     * @throws \Exception
      */
     private function createTestVersions(DataObject $model): void
     {

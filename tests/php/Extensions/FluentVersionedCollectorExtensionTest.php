@@ -2,15 +2,10 @@
 
 namespace SilverStripe\GarbageCollector\Tests\Extensions;
 
-use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\FieldType\DBDatetime;
-use SilverStripe\GarbageCollector\GarbageCollectorService;
 use SilverStripe\GarbageCollector\Collectors\VersionedCollector;
 use SilverStripe\GarbageCollector\Extensions\FluentVersionedCollectorExtension;
+use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
-use SilverStripe\Core\Config\Config;
-use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
-use SilverStripe\i18n\i18n;
 use TractorCow\Fluent\Extension\FluentVersionedExtension;
 use TractorCow\Fluent\State\FluentState;
 

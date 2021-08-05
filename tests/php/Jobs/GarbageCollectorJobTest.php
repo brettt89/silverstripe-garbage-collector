@@ -3,7 +3,6 @@
 namespace SilverStripe\GarbageCollector\Tests\Jobs;
 
 use SilverStripe\Dev\SapphireTest;
-use SilverStripe\GarbageCollector\ProcessorInterface;
 use SilverStripe\GarbageCollector\CollectorInterface;
 use SilverStripe\GarbageCollector\Jobs\GarbageCollectorJob;
 use SilverStripe\GarbageCollector\Tests\Ship;

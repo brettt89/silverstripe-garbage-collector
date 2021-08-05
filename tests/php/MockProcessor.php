@@ -4,7 +4,6 @@ namespace SilverStripe\GarbageCollector\Tests;
 
 use SilverStripe\Dev\TestOnly;
 use SilverStripe\GarbageCollector\ProcessorInterface;
-use SilverStripe\GarbageCollector\Tests\Ship;
 
 class MockProcessor implements ProcessorInterface, TestOnly
 {
