@@ -46,6 +46,10 @@ class SQLExpressionProcessor extends AbstractProcessor
     {
         // Create SQLDelete statement from SQL provided and execute
         $delete = $this->getExpression()->toDelete();
+
+        // Prevent odd behaviour when table name is turned into a column name several times
+        $delete->setDelete('');
+
         $delete->execute();
 
         return DB::affected_rows();
