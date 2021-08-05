@@ -102,7 +102,7 @@ class ChangeSetCollector extends AbstractCollector
                 $mainTable,
                 $itemTable,
                 $relationTable,
-            ],
+            ]
         );
 
         $query->addLeftJoin($itemTableRaw, sprintf('%s."ID" = %s."ChangeSetID"', $mainTable, $itemTable));
