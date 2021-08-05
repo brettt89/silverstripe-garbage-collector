@@ -2,15 +2,10 @@
 
 namespace SilverStripe\GarbageCollector\Tests\Extensions;
 
-use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\FieldType\DBDatetime;
-use SilverStripe\GarbageCollector\GarbageCollectorService;
 use SilverStripe\GarbageCollector\Collectors\VersionedCollector;
 use SilverStripe\GarbageCollector\Extensions\FluentVersionedCollectorExtension;
+use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
-use SilverStripe\Core\Config\Config;
-use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
-use SilverStripe\i18n\i18n;
 use TractorCow\Fluent\Extension\FluentVersionedExtension;
 use TractorCow\Fluent\State\FluentState;
 
@@ -49,7 +44,7 @@ class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
     ];
 
     protected function setUp(): void
-    {   
+    {
         FluentState::singleton()->withState(function (FluentState $state): void {
             $state->setLocale('en_GB');
             parent::setUp();
@@ -57,13 +52,23 @@ class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
     }
 
     /**
-     * @param string $class
-     * @param string $now
+     * @param string $id
+     * @param ?string $modifyDate
      * @param array $expected
+     * @param ?int $deletion_limit
+     * @param ?int $keep_limit
+     * @param bool $keep_unpublished_drafts
      * @throws ValidationException
      * @dataProvider collectionsProvider
      */
-    public function testGetCollections(string $id, string $modifyDate = null, array $expected = [], int $deletion_limit = null): void
+    public function testGetCollections(
+        string $id,
+        string $modifyDate = null,
+        array $expected = [],
+        int $deletion_limit = null,
+        int $keep_limit = null,
+        bool $keep_unpublished_drafts = false
+    ): void
     {
         FluentState::singleton()->withState(function (FluentState $state) use ($id, $modifyDate, $expected, $deletion_limit): void {
             $state->setLocale('en_GB');
@@ -72,7 +77,7 @@ class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
     }
 
     public function collectionsProvider(): array
-    {       
+    {
         return [
             'Localised / No versions passed lifetime' => [
                 'ship1'

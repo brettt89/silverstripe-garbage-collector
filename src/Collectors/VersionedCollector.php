@@ -2,10 +2,7 @@
 
 namespace SilverStripe\GarbageCollector\Collectors;
 
-use SilverStripe\GarbageCollector\Collectors\AbstractCollector;
 use SilverStripe\GarbageCollector\Processors\SQLExpressionProcessor;
-use SilverStripe\Assets\File;
-use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Config\Configurable;
@@ -15,9 +12,7 @@ use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\Queries\SQLExpression;
 use SilverStripe\ORM\Queries\SQLDelete;
 use SilverStripe\ORM\Queries\SQLSelect;
-use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
-use Symbiote\QueuedJobs\Services\QueuedJobService;
 
 class VersionedCollector extends AbstractCollector
 {
@@ -37,6 +32,13 @@ class VersionedCollector extends AbstractCollector
      * @var int
      */
     private static $keep_lifetime = 180;
+
+    /**
+     * Determine whether to keep unpublished draft versions (newer than latest published version)
+     *
+     * @var bool
+     */
+    private static $keep_unpublished_drafts = false;
 
     /**
      * Number of records processed in one deletion run per base class
@@ -74,7 +76,6 @@ class VersionedCollector extends AbstractCollector
         SQLExpressionProcessor::class,
     ];
 
-    
     public function getName(): string
     {
         return 'VersionedCollector';
@@ -110,7 +111,11 @@ class VersionedCollector extends AbstractCollector
 
                         do {
                             $batch = array_splice($versions, 0, $this->config()->get('deletion_version_limit'));
-                            $collections[] = $this->deleteVersionsQuery($class, $recordId, $batch);
+                            $query = $this->deleteVersionsQuery($class, $recordId, $batch);
+
+                            if ($query) {
+                                $collections[] = $query;
+                            }
                         } while (!empty($versions) && count($collections) <= $this->config()->get('query_limit'));
                     }
                 }
@@ -156,15 +161,13 @@ class VersionedCollector extends AbstractCollector
     {
         $keepLimit = (int) $this->config()->get('keep_limit');
         $recordLimit = (int) $this->config()->get('deletion_record_limit');
+        $keepUnpublishedDrafts = (bool) $this->config()->get('keep_unpublished_drafts');
         $deletionDate = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822())
             ->modify(sprintf('- %d days', $this->config()->get('keep_lifetime')))
             ->Rfc2822();
         $records = [];
 
         foreach ($classes as $class) {
-            /** @var DataObject $singleton */
-            $singleton = DataObject::singleton($class);
-
             $mainTable = $this->getTableNameForClass($class);
             $baseTableRaw = $this->getVersionTableName($mainTable);
             $baseTable = sprintf('"%s"', $baseTableRaw);
@@ -194,10 +197,22 @@ class VersionedCollector extends AbstractCollector
                 ],
                 [
                     // Need to have more old versions than the allowed limit
-                    'COUNT(*) > ?' => $keepLimit,
+                    'COUNT(1) > ?' => $keepLimit,
                 ],
                 $recordLimit
             );
+
+            if ($keepUnpublishedDrafts) {
+                $query->addInnerJoin(
+                    // table
+                    '(SELECT "RecordID", MAX("Version") as MaxPublishedVersion FROM ' . $baseTable . ' WHERE "WasPublished" = 1 GROUP BY RecordID)',
+                    // on predicate
+                    $baseTable . '."RecordID" = "MaxVersionSelect"."RecordID"',
+                    // table alias
+                    'MaxVersionSelect',
+                );
+                $query->addWhere($baseTable . '."Version" < "MaxVersionSelect"."MaxPublishedVersion"');
+            }
 
             $this->extend('updateGetRecordsQuery', $query, $class);
 
@@ -239,6 +254,7 @@ class VersionedCollector extends AbstractCollector
     {
         $keepLimit = (int) $this->config()->get('keep_limit');
         $versionLimit = (int) $this->config()->get('deletion_version_limit') * $this->config()->get('query_limit');
+        $keepUnpublishedDrafts = (bool) $this->config()->get('keep_unpublished_drafts');
         $deletionDate = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822())
             ->modify(sprintf('- %d days', $this->config()->get('keep_lifetime')))
             ->Rfc2822();
@@ -286,6 +302,18 @@ class VersionedCollector extends AbstractCollector
                     ]
                 );
 
+                if ($keepUnpublishedDrafts) {
+                    $query->addInnerJoin(
+                        // table
+                        '(SELECT "RecordID", MAX("Version") as MaxPublishedVersion FROM ' . $baseTable . ' WHERE "WasPublished" = 1 GROUP BY RecordID)',
+                        // on predicate
+                        $baseTable . '."RecordID" = "MaxVersionSelect"."RecordID"',
+                        // table alias
+                        'MaxVersionSelect',
+                    );
+                    $query->addWhere($baseTable . '."Version" < "MaxVersionSelect"."MaxPublishedVersion"');
+                }
+
                 $this->extend('updateGetVersionsQuery', $query, $baseClass, $item);
 
                 $results = $query->execute();
@@ -312,7 +340,7 @@ class VersionedCollector extends AbstractCollector
                 if (count($data) === 0) {
                     continue;
                 }
-                
+
                 $versions[$baseClass][$recordId] = $data;
             }
         }
@@ -326,20 +354,20 @@ class VersionedCollector extends AbstractCollector
      * @param string $class
      * @param int $recordId
      * @param array $versions
-     * @return SQLExpression
+     * @return SQLExpression|null
      */
-    protected function deleteVersionsQuery(string $class, int $recordId, array $versions): SQLExpression
+    protected function deleteVersionsQuery(string $class, int $recordId, array $versions): ?SQLExpression
     {
         if (count($versions) === 0) {
             // Nothing to delete
-            return 0;
+            return null;
         }
 
         $tables = $this->getTablesListForClass($class);
         $baseTables = $tables['base'];
 
         if (count($baseTables) === 0) {
-            return 0;
+            return null;
         }
 
         // We can assume first table is the base table
@@ -416,9 +444,7 @@ class VersionedCollector extends AbstractCollector
      */
     public function getTableNameForClass(string $class): string
     {
-        $table = DataObject::singleton($class)
-            ->config()
-            ->uninherited('table_name');
+        $table = DataObject::getSchema()->baseDataTable($class);
 
         // Fallback to class name if no table name is specified
         return $table ?: $class;

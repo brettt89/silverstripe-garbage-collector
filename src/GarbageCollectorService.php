@@ -17,7 +17,7 @@ class GarbageCollectorService
      * @var self
      */
     private static $instance;
-    
+
     /**
      * Collectors registered for processing
      *
@@ -45,7 +45,7 @@ class GarbageCollectorService
     /**
      * @return self
      *
-     * Uses Injector for dependancies instead of static
+     * Uses Injector for dependencies instead of static
      */
     public static function inst()
     {
@@ -60,7 +60,7 @@ class GarbageCollectorService
     public function getCollectors(): array
     {
         $collectors = [];
-        
+
         foreach ($this->config()->get('collectors') as $collector) {
             $collectors[] = Injector::inst()->get($collector);
         }
@@ -115,45 +115,46 @@ class GarbageCollectorService
     }
 
     /**
-     * Process array of Collection using array of Processors (if matching)
+     * Process a Collection using array of Processors (if matching)
      *
-     * @param array $collection Array of collection data
+     * @param mixed $collection Collection data
      * @param array $processors Array of Processors
      */
-    public function processCollection(array $collection, array $processors)
+    public function processCollection($collection, array $processors)
     {
         if (empty($processors)) {
             $this->logger->notice('No Processors provided for Collection');
             return;
         }
-        
-        foreach ($collection as $item) {
-            if (is_array($item) || $item instanceof \Traversable && !$item instanceof DataObject) {
-                // If traversable object is provided, loop through items to process;
-                $this->processCollection($item, $processors);
-            } else {
-                // Otherwise loop through processors and execute.
-                foreach ($processors as $instance => $processor) {
-                    if ($item instanceof $instance) {
-                        try {
-                            // Use Injector to create processor and execute
-                            $proc = Injector::inst()->create($processor, $item);
-                            $records = $proc->process();
 
-                            $this->logger->info(sprintf('Processed %d records for %s using %s', $records, get_class($item), $proc->getName()));
-                        } catch (\Exception $e) {
-                            // Log failures and continue;
-                            // TODO: Stop re-processing of failed deletion records and expose it for audit.
-                            $this->logger->error(sprintf('Unable to process records: "%s"', $e->getMessage()));
-                        }
-                        
-                        // Move on to next item
-                        continue 2;
-                    }
-                }
-                // No processor was able to be found.
-                $this->logger->notice(sprintf('Unable to find processor for %s', get_class($item)));
+        if (is_array($collection) || $collection instanceof \Traversable && !$collection instanceof DataObject) {
+            // If traversable object is provided, loop through its items to process;
+            foreach ($collection as $item) {
+                $this->processCollection($item, $processors);
             }
+        } else {
+            // Otherwise loop through processors and execute.
+            foreach ($processors as $instance => $processor) {
+                if ($collection instanceof $instance) {
+                    try {
+                        // Use Injector to create processor and execute
+                        $proc = Injector::inst()->create($processor, $collection);
+                        $records = $proc->process();
+
+                        $this->logger->info(sprintf('Processed %d records for %s using %s', $records, get_class($collection), $proc->getName()));
+                    } catch (\Exception $e) {
+                        // Log failures and continue;
+                        // TODO: Stop re-processing of failed deletion records and expose it for audit.
+                        $this->logger->error(sprintf('Unable to process records: "%s"', $e->getMessage()));
+                    }
+
+                    // Item processed, move on
+                    return;
+                }
+            }
+
+            // No processor was able to be found.
+            $this->logger->notice(sprintf('Unable to find processor for %s', get_class($collection)));
         }
     }
 }

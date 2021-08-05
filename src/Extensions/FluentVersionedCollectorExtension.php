@@ -6,7 +6,6 @@ use SilverStripe\Core\Extension;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Queries\SQLDelete;
 use SilverStripe\ORM\Queries\SQLSelect;
-use SilverStripe\GarbageCollector\Collectors\VersionedCollector;
 use TractorCow\Fluent\Extension\FluentExtension;
 use TractorCow\Fluent\Extension\FluentVersionedExtension;
 
@@ -14,7 +13,7 @@ class FluentVersionedCollectorExtension extends Extension
 {
     /**
      * Modify getRecordsQuery to join with Localised tables
-     * 
+     *
      * @param SQLSelect $query
      * @param string $class
      */
@@ -55,13 +54,13 @@ class FluentVersionedCollectorExtension extends Extension
 
     /**
      * Modify getRecords return data to include Locale data
-     * 
+     *
      * @param string $class     Classname of records being modified
      * @param array  $item      Item details for returning
      * @param array  $result    Query result data
      */
     public function updateRecordsData(string $class, array &$item, array $result)
-    {        
+    {
         if ($this->isLocalised($class)) {
             // Add additional locale data for localised records
             $item['locale'] = $result['Locale'];
@@ -70,7 +69,7 @@ class FluentVersionedCollectorExtension extends Extension
 
     /**
      * Modify getRecords return data to include Locale data
-     * 
+     *
      * @param SQLSelect $query  Select query for Versions records
      * @param string    $class  Classname of records
      * @param array     $item   Item details
@@ -80,7 +79,7 @@ class FluentVersionedCollectorExtension extends Extension
         $locale = array_key_exists('locale', $item)
                     ? $item['locale']
                     : null;
-        
+
         $mainTable = $this->owner->getTableNameForClass($class);
         $baseTable = sprintf('"%s"', $this->owner->getVersionTableName($mainTable));
 
@@ -109,7 +108,7 @@ class FluentVersionedCollectorExtension extends Extension
 
     /**
      * Modify getRecords return data to include Locale data
-     * 
+     *
      * @param string $class   Classname of records
      * @param array  $tables  Tables list data for class
      */
@@ -139,10 +138,9 @@ class FluentVersionedCollectorExtension extends Extension
 
     /**
      * Modify getRecords return data to include Locale data
-     * 
+     *
      * @param SQLDelete $query  Delete query for Version records
      * @param string    $class  Classname of records
-     * @param array     $item   Item details
      */
     public function updateDeleteVersionsQuery(SQLDelete &$query, string $class)
     {
@@ -176,7 +174,7 @@ class FluentVersionedCollectorExtension extends Extension
 
     /**
      * Check if Class is Localised (Has Fluent extension and Localised fields)
-     * 
+     *
      * @param string $class
      * @return bool
      */
@@ -187,7 +185,7 @@ class FluentVersionedCollectorExtension extends Extension
 
     /**
      * Check if Class has FluentVersionedExtension
-     * 
+     *
      * @param string $class
      * @return bool
      */
@@ -198,7 +196,7 @@ class FluentVersionedCollectorExtension extends Extension
 
     /**
      * Check if Class has localized fields
-     * 
+     *
      * @param string $class
      * @return bool
      */

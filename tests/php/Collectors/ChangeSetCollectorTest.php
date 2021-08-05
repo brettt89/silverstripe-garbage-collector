@@ -6,7 +6,7 @@ use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\GarbageCollector\Collectors\ChangeSetCollector;
-use SilverStripe\GarbageCollector\GarbageCollectorService;
+use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\GarbageCollector\Tests\Ship;
 use SilverStripe\Core\Config\Config;
@@ -25,7 +25,7 @@ class ChangeSetCollectorTest extends SapphireTest
     protected static $extra_dataobjects = [
         Ship::class,
     ];
-    
+
     /**
      * @var string[][]
      */
@@ -102,7 +102,7 @@ class ChangeSetCollectorTest extends SapphireTest
     /**
      * @param DataObject|Versioned $model
      * @throws ValidationException
-     * @throws Exception
+     * @throws \Exception
      */
     private function createTestVersions(DataObject $model): void
     {

@@ -4,7 +4,6 @@ namespace SilverStripe\GarbageCollector\Collectors;
 
 use SilverStripe\Core\Convert;
 use SilverStripe\ORM\DB;
-use SilverStripe\GarbageCollector\Collectors\AbstractCollector;
 use SilverStripe\GarbageCollector\Processors\RawSQLProcessor;
 use SilverStripe\GarbageCollector\Models\RawSQL;
 
@@ -26,7 +25,7 @@ class ObsoleteTableCollector extends AbstractCollector
      * @var string
      */
     private static $table_prefix = '_obsolete_';
-    
+
     /**
      * Processors used for processing items
      *
@@ -48,14 +47,14 @@ class ObsoleteTableCollector extends AbstractCollector
         $collection = [];
 
         $tables = DB::query(sprintf('SHOW TABLES LIKE \'%s%%\'', Convert::raw2sql($table_prefix)))->column();
-        
+
         if (empty($tables)) {
             return $collection;
         }
 
         foreach ($tables as $table) {
             if (in_array(substr($table, strlen($table_prefix)), $this->config()->get('skip_tables'))) {
-                // If tablename without prefix is in "skip_tables" config, then skip.
+                // If table name without prefix is in "skip_tables" config, then skip.
                 continue;
             }
 

@@ -24,7 +24,7 @@ class GarbageCollectorJob extends AbstractQueuedJob
      * @var \Monolog\Handler\HandlerInterface
      */
     private $logger;
-    
+
     /**
      * Constructor
      *
@@ -32,6 +32,8 @@ class GarbageCollectorJob extends AbstractQueuedJob
      */
     public function __construct(CollectorInterface $collector, $batchSize = 10)
     {
+        parent::__construct();
+
         $this->collector = $collector;
         $this->batchSize = $batchSize;
 

@@ -2,15 +2,13 @@
 
 namespace SilverStripe\GarbageCollector;
 
-use SilverStripe\ORM\Queries\SQLConditionalExpression;
-
 interface CollectorInterface
 {
     /**
      * @return string
      */
     public function getName(): string;
-    
+
     /**
      * @return array
      */
