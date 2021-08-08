@@ -209,7 +209,7 @@ class VersionedCollector extends AbstractCollector
                     // on predicate
                     $baseTable . '."RecordID" = "MaxVersionSelect"."RecordID"',
                     // table alias
-                    'MaxVersionSelect',
+                    'MaxVersionSelect'
                 );
                 $query->addWhere($baseTable . '."Version" < "MaxVersionSelect"."MaxPublishedVersion"');
             }
@@ -309,7 +309,7 @@ class VersionedCollector extends AbstractCollector
                         // on predicate
                         $baseTable . '."RecordID" = "MaxVersionSelect"."RecordID"',
                         // table alias
-                        'MaxVersionSelect',
+                        'MaxVersionSelect'
                     );
                     $query->addWhere($baseTable . '."Version" < "MaxVersionSelect"."MaxPublishedVersion"');
                 }
