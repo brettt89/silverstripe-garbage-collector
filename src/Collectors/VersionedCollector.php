@@ -388,7 +388,7 @@ class VersionedCollector extends AbstractCollector
                 $baseTable . '."RecordID"' => $recordId,
                 sprintf($baseTable . '."Version" IN (%s)', DB::placeholders($versions)) => $versions,
             ],
-            $baseTables,
+            $baseTables
         );
 
         // Join additional tables so we can delete all related data (avoid orphaned version data)
