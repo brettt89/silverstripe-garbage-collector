@@ -2,8 +2,8 @@
 
 namespace SilverStripe\GarbageCollector\Processors;
 
-use SilverStripe\ORM\Queries\SQLExpression;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\Queries\SQLConditionalExpression;
 
 class SQLExpressionProcessor extends AbstractProcessor
 {
@@ -11,11 +11,11 @@ class SQLExpressionProcessor extends AbstractProcessor
     /**
      * Expression to delete
      *
-     * @var SQLExpression
+     * @var SQLConditionalExpression
      */
     private $expression;
 
-    public function __construct(SQLExpression $expression = null, string $name = '')
+    public function __construct(SQLConditionalExpression $expression = null, string $name = '')
     {
         $this->expression = $expression;
         parent::__construct($name);
@@ -24,13 +24,13 @@ class SQLExpressionProcessor extends AbstractProcessor
     /**
      * Get internal SQL expression
      *
-     * @return SQLExpression
+     * @return SQLConditionalExpression
      * @throws \Exception
      */
-    protected function getExpression(): SQLExpression
+    protected function getExpression(): SQLConditionalExpression
     {
-        if (!is_a($this->expression, SQLExpression::class)) {
-            throw new \Exception(static::class . ' requires a SQLExpression provided via its constructor.');
+        if (!is_a($this->expression, SQLConditionalExpression::class)) {
+            throw new \Exception(static::class . ' requires a SQLConditionalExpression provided via its constructor.');
         }
 
         return $this->expression;
@@ -83,6 +83,6 @@ class SQLExpressionProcessor extends AbstractProcessor
      */
     public function getImplementorClass(): string
     {
-        return SQLExpression::class;
+        return SQLConditionalExpression::class;
     }
 }
