@@ -162,10 +162,15 @@ class VersionedCollector extends AbstractCollector
         $keepLimit = (int) $this->config()->get('keep_limit');
         $recordLimit = (int) $this->config()->get('deletion_record_limit');
         $keepUnpublishedDrafts = (bool) $this->config()->get('keep_unpublished_drafts');
-        $deletionDate = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822())
-            ->modify(sprintf('- %d days', $this->config()->get('keep_lifetime')))
-            ->Rfc2822();
+        $deletionDate = DBDatetime::now();
         $records = [];
+
+        $modifiedTime = strtotime(
+            sprintf('- %d days', $this->config()->get('keep_lifetime')),
+            $deletionDate->getTimestamp()
+        );
+
+        $deletionDate = $deletionDate->setValue($modifiedTime)->Rfc2822();
 
         foreach ($classes as $class) {
             $mainTable = $this->getTableNameForClass($class);
@@ -255,10 +260,15 @@ class VersionedCollector extends AbstractCollector
         $keepLimit = (int) $this->config()->get('keep_limit');
         $versionLimit = (int) $this->config()->get('deletion_version_limit') * $this->config()->get('query_limit');
         $keepUnpublishedDrafts = (bool) $this->config()->get('keep_unpublished_drafts');
-        $deletionDate = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822())
-            ->modify(sprintf('- %d days', $this->config()->get('keep_lifetime')))
-            ->Rfc2822();
+        $deletionDate = DBDatetime::now();
         $versions = [];
+
+        $modifiedTime = strtotime(
+            sprintf('- %d days', $this->config()->get('keep_lifetime')),
+            $deletionDate->getTimestamp()
+        );
+
+        $deletionDate = $deletionDate->setValue($modifiedTime)->Rfc2822();
 
         foreach ($records as $baseClass => $items) {
             $mainTable = $this->getTableNameForClass($baseClass);

@@ -70,9 +70,14 @@ class ChangeSetCollector extends AbstractCollector
      */
     private function getChangeSetIDs()
     {
-        $deletionDate = DBDatetime::now()
-            ->modify(sprintf('- %d days', $this->config()->get('deletion_lifetime')))
-            ->Rfc2822();
+        $deletionDate = DBDatetime::now();
+
+        $modifiedTime = strtotime(
+            sprintf('- %d days', $this->config()->get('deletion_lifetime')),
+            $deletionDate->getTimestamp()
+        );
+
+        $deletionDate = $deletionDate->setValue($modifiedTime)->Rfc2822();
 
         $dataList = ChangeSet::get()
             ->filter(['LastEdited:LessThan' => $deletionDate])
