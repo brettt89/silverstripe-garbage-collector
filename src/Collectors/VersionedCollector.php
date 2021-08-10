@@ -99,7 +99,7 @@ class VersionedCollector extends AbstractCollector
             $versionData = $this->getVersionsForDeletion($records);
 
             if (empty($versionData)) {
-                return $collections;
+                continue;
             }
 
             foreach ($versionData as $records) {
