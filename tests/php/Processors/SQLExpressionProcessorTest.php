@@ -3,6 +3,7 @@
 namespace SilverStripe\GarbageCollector\Tests\Processors;
 
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\GarbageCollector\Tests\CargoShip;
 use SilverStripe\GarbageCollector\Tests\Ship;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\ORM\Queries\SQLExpression;
@@ -21,6 +22,7 @@ class SQLExpressionProcessorTest extends SapphireTest
      */
     protected static $extra_dataobjects = [
         Ship::class,
+        CargoShip::class,
     ];
 
     public function testProcess()
@@ -54,8 +56,8 @@ class SQLExpressionProcessorTest extends SapphireTest
         // 2 records should have been removed
         $this->assertEquals($count, 2);
 
-        // 3 records should remain (out of 4)
-        $this->assertEquals(Ship::get()->count(), 3);
+        // 3 records (without subclasses) should remain (out of 4)
+        $this->assertEquals(Ship::get()->filter(['ClassName' => Ship::class])->count(), 3);
 
         // Ensure base table is used for name
         $name = $processor->getName();

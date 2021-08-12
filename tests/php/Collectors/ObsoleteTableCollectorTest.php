@@ -3,6 +3,7 @@
 namespace SilverStripe\GarbageCollector\Tests\Collectors;
 
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\GarbageCollector\Tests\CargoShip;
 use SilverStripe\ORM\DB;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
@@ -21,6 +22,7 @@ class ObsoleteTableCollectorTest extends SapphireTest
      */
     protected static $extra_dataobjects = [
         Ship::class,
+        CargoShip::class,
     ];
 
     public function testGetName(): void

@@ -3,6 +3,7 @@
 namespace SilverStripe\GarbageCollector\Tests\Processors;
 
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\GarbageCollector\Tests\CargoShip;
 use SilverStripe\ORM\DB;
 use SilverStripe\GarbageCollector\Tests\Ship;
 use SilverStripe\GarbageCollector\Models\RawSQL;
@@ -20,6 +21,7 @@ class RawSQLProcessorTest extends SapphireTest
      */
     protected static $extra_dataobjects = [
         Ship::class,
+        CargoShip::class,
     ];
 
     public function testProcessor()
