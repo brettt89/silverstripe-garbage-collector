@@ -8,6 +8,10 @@ use SilverStripe\GarbageCollector\GarbageCollectorService;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJob;
 
+if (!class_exists(AbstractQueuedJob::class)) {
+    return;
+}
+
 
 /**
  * @property array $versions
