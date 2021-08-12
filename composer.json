@@ -26,7 +26,7 @@
         "symbiote/silverstripe-queuedjobs": "^4.7"
     },
     "suggest": {
-        "silverstripe/queuedjobs": "For usage of the GarbageCollectorJob within your application"
+        "symbiote/silverstripe-queuedjobs": "For usage of the GarbageCollectorJob within your application"
     },
     "scripts": {
         "test": "vendor/bin/phpunit"

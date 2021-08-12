@@ -7,6 +7,7 @@ use SilverStripe\GarbageCollector\CollectorInterface;
 use SilverStripe\GarbageCollector\Jobs\GarbageCollectorJob;
 use SilverStripe\GarbageCollector\Tests\Ship;
 use SilverStripe\GarbageCollector\Tests\MockProcessor;
+use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJob;
 
 class GarbageCollectorJobTest extends SapphireTest
@@ -22,6 +23,16 @@ class GarbageCollectorJobTest extends SapphireTest
     protected static $extra_dataobjects = [
         Ship::class,
     ];
+
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+
+        if (!class_exists(AbstractQueuedJob::class)) {
+            self::markTestSkipped('This test requires the queuedjobs module to be installed');
+        }
+    }
+
 
     public function testSetup()
     {
