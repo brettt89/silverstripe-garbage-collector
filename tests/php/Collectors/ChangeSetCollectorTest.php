@@ -3,6 +3,7 @@
 namespace SilverStripe\GarbageCollector\Tests\Collectors;
 
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\GarbageCollector\Tests\CargoShip;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\GarbageCollector\Collectors\ChangeSetCollector;
@@ -24,6 +25,7 @@ class ChangeSetCollectorTest extends SapphireTest
      */
     protected static $extra_dataobjects = [
         Ship::class,
+        CargoShip::class,
     ];
 
     /**

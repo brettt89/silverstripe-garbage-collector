@@ -4,6 +4,7 @@ namespace SilverStripe\GarbageCollector\Tests\Extensions;
 
 use SilverStripe\GarbageCollector\Collectors\VersionedCollector;
 use SilverStripe\GarbageCollector\Extensions\FluentVersionedCollectorExtension;
+use SilverStripe\GarbageCollector\Tests\CargoShip;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
 use TractorCow\Fluent\Extension\FluentVersionedExtension;
@@ -28,6 +29,7 @@ class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
      */
     protected static $extra_dataobjects = [
         Ship::class,
+        CargoShip::class,
     ];
 
     /**
@@ -58,6 +60,7 @@ class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
      * @param ?int $deletion_limit
      * @param ?int $keep_limit
      * @param bool $keep_unpublished_drafts
+     * @param string $model_class
      * @throws ValidationException
      * @dataProvider collectionsProvider
      */
@@ -67,7 +70,8 @@ class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
         array $expected = [],
         int $deletion_limit = null,
         int $keep_limit = null,
-        bool $keep_unpublished_drafts = false
+        bool $keep_unpublished_drafts = false,
+        string $model_class = Ship::class
     ): void
     {
         FluentState::singleton()->withState(function (FluentState $state) use ($id, $modifyDate, $expected, $deletion_limit): void {

@@ -3,6 +3,7 @@
 namespace SilverStripe\GarbageCollector\Tests\Collectors;
 
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\GarbageCollector\Tests\CargoShip;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\GarbageCollector\Collectors\VersionedCollector;
@@ -24,6 +25,7 @@ class VersionedCollectorTest extends SapphireTest
      */
     protected static $extra_dataobjects = [
         Ship::class,
+        CargoShip::class,
     ];
 
     /**
@@ -31,6 +33,9 @@ class VersionedCollectorTest extends SapphireTest
      */
     protected static $required_extensions = [
         Ship::class => [
+            Versioned::class,
+        ],
+        CargoShip::class => [
             Versioned::class,
         ],
     ];
@@ -42,6 +47,7 @@ class VersionedCollectorTest extends SapphireTest
      * @param ?int $deletion_limit
      * @param ?int $keep_limit
      * @param bool $keep_unpublished_drafts
+     * @param string $model_class
      * @throws ValidationException
      * @dataProvider collectionsProvider
      */
@@ -51,10 +57,11 @@ class VersionedCollectorTest extends SapphireTest
         array $expected = [],
         int $deletion_limit = null,
         int $keep_limit = null,
-        bool $keep_unpublished_drafts = false
+        bool $keep_unpublished_drafts = false,
+        string $model_class = Ship::class
     ): void
     {
-        $model = $this->objFromFixture(Ship::class, $id);
+        $model = $this->objFromFixture($model_class, $id);
         $this->createTestVersions($model);
 
         // Modify date for expiration
@@ -185,6 +192,27 @@ class VersionedCollectorTest extends SapphireTest
                 1, // only keep one draft version
                 true, // keep unpublished drafts
             ],
+            'MTI model' => [
+                'cargoship1',
+                '+ 1 year',
+                [
+                    [
+                        'recordId' => 6,
+                        // 5 is published as it's the 4th version after the initial object is created
+                        // when creating the mock version data, every 3rd version is published
+                        // (creating draft and published, so two versions, hence 4th in the row)
+                        'versionIds' => [ 1, 2, 3, 4, 6, 7, 8, 10, 11],
+                        'tables' => [
+                            '"GarbageCollector_Ship_Versions"',
+                            '"GarbageCollector_CargoShip_Versions"',
+                        ],
+                    ],
+                ],
+                10, // delete in batch of 5
+                null, // only keep one draft version
+                false,
+                CargoShip::class,
+            ]
         ];
     }
 

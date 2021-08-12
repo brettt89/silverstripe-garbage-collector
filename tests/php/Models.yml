@@ -9,3 +9,7 @@ SilverStripe\GarbageCollector\Tests\Ship:
     Title: 'TestShip4'
   ship5:
     Title: 'TestShip5'
+
+SilverStripe\GarbageCollector\Tests\CargoShip:
+  cargoship1:
+    Title: 'TestCargoShip1'

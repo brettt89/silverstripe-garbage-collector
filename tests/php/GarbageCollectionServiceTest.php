@@ -21,6 +21,7 @@ class GarbageCollectorServiceTest extends SapphireTest
      */
     protected static $extra_dataobjects = [
         Ship::class,
+        CargoShip::class,
     ];
 
     private $service;
