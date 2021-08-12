@@ -208,8 +208,8 @@ class VersionedCollectorTest extends SapphireTest
                         ],
                     ],
                 ],
-                10, // delete in batch of 5
-                null, // only keep one draft version
+                10, // delete in batch of 10
+                null, // default keep limit
                 false,
                 CargoShip::class,
             ]
