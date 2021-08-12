@@ -5,7 +5,6 @@ namespace SilverStripe\GarbageCollector\Tests;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\GarbageCollector\CollectorInterface;
-use SilverStripe\GarbageCollector\ProcessorInterface;
 use SilverStripe\GarbageCollector\GarbageCollectorService;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
