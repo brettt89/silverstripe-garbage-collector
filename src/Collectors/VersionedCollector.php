@@ -187,7 +187,7 @@ class VersionedCollector extends AbstractCollector
                     $baseTable . '."LastEdited" <= ?' => $deletionDate,
                     // Include only draft edits versions
                     // as we don't want to delete publish versions because these drive isPublishedInLocale()
-                    $baseTable . '."WasPublished"' => 0,
+                    //$baseTable . '."WasPublished"' => 0,
                     // Skip records without mandatory data
                     $baseTable . '."ClassName" IS NOT NULL',
                     $baseTable . '."ClassName" != ?' => '',
@@ -291,7 +291,7 @@ class VersionedCollector extends AbstractCollector
                         $baseTable . '."LastEdited" <= ?' => $deletionDate,
                         // Include only draft edits versions
                         // as we don't want to delete publish versions because these drive isPublishedInLocale()
-                        $baseTable . '."WasPublished"' => 0,
+                        //$baseTable . '."WasPublished"' => 0,
                         // Skip records without mandatory data
                         $baseTable . '."ClassName" IS NOT NULL',
                         $baseTable . '."ClassName" != ?' => '',
