@@ -161,6 +161,7 @@ class VersionedCollector extends AbstractCollector
     {
         $keepLimit = (int) $this->config()->get('keep_limit');
         $recordLimit = (int) $this->config()->get('deletion_record_limit');
+        $keepUnpublishedDrafts = (bool) $this->config()->get('keep_unpublished_drafts');
         $deletionDate = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822());
         $deletionDate = $deletionDate->setValue(strtotime(
                 sprintf('- %d days', $this->config()->get('keep_lifetime')),
@@ -256,9 +257,11 @@ class VersionedCollector extends AbstractCollector
         $keepLimit = (int) $this->config()->get('keep_limit');
         $versionLimit = (int) $this->config()->get('deletion_version_limit') * $this->config()->get('query_limit');
         $keepUnpublishedDrafts = (bool) $this->config()->get('keep_unpublished_drafts');
-        $deletionDate = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822())
-            ->modify(sprintf('- %d days', $this->config()->get('keep_lifetime')))
-            ->Rfc2822();
+        $deletionDate = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822());
+        $deletionDate = $deletionDate->setValue(strtotime(
+                sprintf('- %d days', $this->config()->get('keep_lifetime')),
+                $deletionDate->getTimestamp()
+            ))->Rfc2822();
         $versions = [];
 
         foreach ($records as $baseClass => $items) {
