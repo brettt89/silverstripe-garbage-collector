@@ -156,9 +156,11 @@ class VersionedCollector extends AbstractCollector
     {
         $keepLimit = (int) $this->config()->get('keep_limit');
         $recordLimit = (int) $this->config()->get('deletion_record_limit');
-        $deletionDate = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822())
-            ->modify(sprintf('- %d days', $this->config()->get('keep_lifetime')))
-            ->Rfc2822();
+        $deletionDate = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822());
+        $deletionDate = $deletionDate->setValue(strtotime(
+                sprintf('- %d days', $this->config()->get('keep_lifetime')),
+                $deletionDate->getTimestamp()
+            ))->Rfc2822();
         $records = [];
 
         foreach ($classes as $class) {
