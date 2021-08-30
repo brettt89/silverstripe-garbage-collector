@@ -8,6 +8,10 @@ use SilverStripe\GarbageCollector\GarbageCollectorService;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJob;
 
+if (!class_exists(AbstractQueuedJob::class)) {
+    return;
+}
+
 
 /**
  * @property array $versions
@@ -24,7 +28,7 @@ class GarbageCollectorJob extends AbstractQueuedJob
      * @var \Monolog\Handler\HandlerInterface
      */
     private $logger;
-    
+
     /**
      * Constructor
      *
@@ -32,6 +36,8 @@ class GarbageCollectorJob extends AbstractQueuedJob
      */
     public function __construct(CollectorInterface $collector, $batchSize = 10)
     {
+        parent::__construct();
+
         $this->collector = $collector;
         $this->batchSize = $batchSize;
 

@@ -14,6 +14,7 @@ The `VersionedCollector` class is used to get Version Database records that are 
 |--|--|--|--|
 | **keep_limit** | 2 | Integer | Number of Version records to always maintain |
 | **keep_lifetime** | 180 | Integer | Age of records required for deletion |
+| **keep_unpublished_drafts** | false | Boolean | Flag whether to keep unpublished draft versions |
 | **deletion_record_limit** | 100 | Integer | Maximum number of base records for collection |
 | **deletion_version_limit** | 100 | Integer | Maximum number of Versioned records per query |
 | **query_limit** | 10 | Integer | Maximum number of SQL Queries to return in collection
@@ -61,3 +62,6 @@ The `ChangeSetCollector` class is used to get ChangeSet Database records that ar
 > \* Array of Strings
 > \** Replacement for 'SQLExpressionProcessor::class' evaluation
 
+## ObsoleteTable Collector
+
+The `ObsoleteTableCollector` class is used to get `_obsolete_` Database tables and provides a collection of `RawSQL` Statements that will remove all these tables when executed.

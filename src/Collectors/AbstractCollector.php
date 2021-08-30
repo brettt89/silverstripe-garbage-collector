@@ -9,14 +9,14 @@ use SilverStripe\Core\Config\Config;
 abstract class AbstractCollector implements CollectorInterface
 {
     use Configurable;
-    
+
     /**
      * Processors used for processing items
      *
      * @var array
      */
     private static $processors = [];
-    
+
     /**
      * @return string Name of Collector
      */

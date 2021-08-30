@@ -3,6 +3,7 @@
 namespace SilverStripe\GarbageCollector\Tests\Processors;
 
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\GarbageCollector\Tests\CargoShip;
 use SilverStripe\ORM\DataList;
 use SilverStripe\GarbageCollector\Tests\Ship;
 use SilverStripe\GarbageCollector\Processors\DataListProcessor;
@@ -19,11 +20,12 @@ class DataListProcessorTest extends SapphireTest
      */
     protected static $extra_dataobjects = [
         Ship::class,
+        CargoShip::class,
     ];
 
     public function testProcessor()
     {
-        // Pass 2 records to be removed.
+        // Pass 2 records to be removed (out of 5)
         $list = Ship::get()->limit(2);
 
         $processor = new DataListProcessor($list);
@@ -31,8 +33,8 @@ class DataListProcessorTest extends SapphireTest
 
         // 2 records should have been removed
         $this->assertEquals($count, 2);
-        // 1 record should remain
-        $this->assertEquals(Ship::get()->count(), 1);
+        // 3 records (without subclasses) should remain
+        $this->assertEquals(Ship::get()->filter(['ClassName' => Ship::class])->count(), 3);
         $this->assertEquals(Ship::class, $processor->getName());
 
         $processor = new DataListProcessor($list, 'TestName');

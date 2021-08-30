@@ -2,7 +2,6 @@
 
 namespace SilverStripe\GarbageCollector\Collectors;
 
-use SilverStripe\GarbageCollector\Collectors\AbstractCollector;
 use SilverStripe\GarbageCollector\Processors\SQLExpressionProcessor;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\FieldType\DBDatetime;
@@ -31,7 +30,7 @@ class ChangeSetCollector extends AbstractCollector
      * @var integer
      */
     private static $query_limit = 5;
-    
+
     /**
      * Processors used for processing items
      *
@@ -59,7 +58,7 @@ class ChangeSetCollector extends AbstractCollector
             $batch = array_splice($ids, 0, $this->config()->get('deletion_limit'));
             $collection[] = $this->getSQLQueryRecord($batch);
         } while (!empty($ids) && count($collection) <= $this->config()->get('query_limit'));
-        
+
 
         return $collection;
     }
@@ -79,7 +78,7 @@ class ChangeSetCollector extends AbstractCollector
             ->filter(['LastEdited:LessThan' => $deletionDate])
             ->sort('ID', 'ASC')
             ->limit($this->config()->get('deletion_limit') * $this->config()->get('query_limit'));
-        
+
         return $dataList->columnUnique('ID');
     }
 
@@ -103,12 +102,12 @@ class ChangeSetCollector extends AbstractCollector
                 $mainTable,
                 $itemTable,
                 $relationTable,
-            ],
+            ]
         );
 
         $query->addLeftJoin($itemTableRaw, sprintf('%s."ID" = %s."ChangeSetID"', $mainTable, $itemTable));
         $query->addLeftJoin($relationTableRaw, sprintf('%s."ID" = %s."ChangeSetItemID"', $itemTable, $relationTable));
-        
+
         return $query;
     }
 }
