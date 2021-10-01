@@ -162,15 +162,12 @@ class VersionedCollector extends AbstractCollector
         $keepLimit = (int) $this->config()->get('keep_limit');
         $recordLimit = (int) $this->config()->get('deletion_record_limit');
         $keepUnpublishedDrafts = (bool) $this->config()->get('keep_unpublished_drafts');
-        $deletionDate = DBDatetime::now();
-        $records = [];
-
-        $modifiedTime = strtotime(
+        $deletionDate = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822());
+        $deletionDate = $deletionDate->setValue(strtotime(
             sprintf('- %d days', $this->config()->get('keep_lifetime')),
             $deletionDate->getTimestamp()
-        );
-
-        $deletionDate = $deletionDate->setValue($modifiedTime)->Rfc2822();
+        ))->Rfc2822();
+        $records = [];
 
         foreach ($classes as $class) {
             $mainTable = $this->getTableNameForClass($class);
@@ -178,31 +175,31 @@ class VersionedCollector extends AbstractCollector
             $baseTable = sprintf('"%s"', $baseTableRaw);
             $query = SQLSelect::create(
                 [
-                    // We need to identify the records which have old versions ready for deletion
-                    $baseTable . '."RecordID"',
+                // We need to identify the records which have old versions ready for deletion
+                $baseTable . '."RecordID"',
                 ],
                 $baseTable,
                 [
-                    // Include only versions older than specified date
-                    $baseTable . '."LastEdited" <= ?' => $deletionDate,
-                    // Include only draft edits versions
-                    // as we don't want to delete publish versions because these drive isPublishedInLocale()
-                    //$baseTable . '."WasPublished"' => 0,
-                    // Skip records without mandatory data
-                    $baseTable . '."ClassName" IS NOT NULL',
-                    $baseTable . '."ClassName" != ?' => '',
+                // Include only versions older than specified date
+                $baseTable . '."LastEdited" <= ?' => $deletionDate,
+                // Include only draft edits versions
+                // as we don't want to delete publish versions because these drive isPublishedInLocale()
+                //$baseTable . '."WasPublished"' => 0,
+                // Skip records without mandatory data
+                $baseTable . '."ClassName" IS NOT NULL',
+                $baseTable . '."ClassName" != ?' => '',
                 ],
                 [
-                    // Apply consistent ordering
-                    $baseTable . '."RecordID"' => 'ASC',
+                // Apply consistent ordering
+                $baseTable . '."RecordID"' => 'ASC',
                 ],
                 [
-                    // Grouping by Record ID as we want to get RecordID overview at this point
-                    $baseTable . '."RecordID"',
+                // Grouping by Record ID as we want to get RecordID overview at this point
+                $baseTable . '."RecordID"',
                 ],
                 [
-                    // Need to have more old versions than the allowed limit
-                    'COUNT(1) > ?' => $keepLimit,
+                // Need to have more old versions than the allowed limit
+                'COUNT(1) > ?' => $keepLimit,
                 ],
                 $recordLimit
             );
@@ -231,7 +228,7 @@ class VersionedCollector extends AbstractCollector
 
             while ($result = $results->next()) {
                 $item = [
-                    'id' => (int) $result['RecordID'],
+                'id' => (int) $result['RecordID'],
                 ];
 
                 $this->extend('updateRecordsData', $class, $item, $result);
@@ -260,15 +257,12 @@ class VersionedCollector extends AbstractCollector
         $keepLimit = (int) $this->config()->get('keep_limit');
         $versionLimit = (int) $this->config()->get('deletion_version_limit') * $this->config()->get('query_limit');
         $keepUnpublishedDrafts = (bool) $this->config()->get('keep_unpublished_drafts');
-        $deletionDate = DBDatetime::now();
-        $versions = [];
-
-        $modifiedTime = strtotime(
+        $deletionDate = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822());
+        $deletionDate = $deletionDate->setValue(strtotime(
             sprintf('- %d days', $this->config()->get('keep_lifetime')),
             $deletionDate->getTimestamp()
-        );
-
-        $deletionDate = $deletionDate->setValue($modifiedTime)->Rfc2822();
+        ))->Rfc2822();
+        $versions = [];
 
         foreach ($records as $baseClass => $items) {
             $mainTable = $this->getTableNameForClass($baseClass);
