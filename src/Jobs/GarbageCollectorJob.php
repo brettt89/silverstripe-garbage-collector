@@ -14,6 +14,10 @@ if (!class_exists(AbstractQueuedJob::class)) {
 
 
 /**
+ * @property CollectorInterface|null $collector
+ * @property int|null $batchSize
+ * @property array $remaining
+ * @property array $processors
  * @property array $versions
  * @property array $remainingVersions
  */
@@ -34,7 +38,7 @@ class GarbageCollectorJob extends AbstractQueuedJob
      *
      * @var string
      */
-    public function __construct(CollectorInterface $collector, $batchSize = 10)
+    public function __construct(?CollectorInterface $collector = null, $batchSize = 10)
     {
         parent::__construct();
 
