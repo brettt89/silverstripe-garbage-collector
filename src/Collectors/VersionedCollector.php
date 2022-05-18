@@ -41,6 +41,13 @@ class VersionedCollector extends AbstractCollector
     private static $keep_unpublished_drafts = false;
 
     /**
+     * Determine whether to delete published records
+     *
+     * @var bool
+     */
+    private static $delete_published_records = false;
+
+    /**
      * Number of records processed in one deletion run per base class
      *
      * @var int
@@ -162,6 +169,7 @@ class VersionedCollector extends AbstractCollector
         $keepLimit = (int) $this->config()->get('keep_limit');
         $recordLimit = (int) $this->config()->get('deletion_record_limit');
         $keepUnpublishedDrafts = (bool) $this->config()->get('keep_unpublished_drafts');
+        $deletePublishedRecords = (bool) $this->config()->get('delete_published_records');
         $deletionDate = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822());
         $deletionDate = $deletionDate->setValue(strtotime(
                 sprintf('- %d days', $this->config()->get('keep_lifetime')),
@@ -182,9 +190,8 @@ class VersionedCollector extends AbstractCollector
                 [
                     // Include only versions older than specified date
                     $baseTable . '."LastEdited" <= ?' => $deletionDate,
-                    // Include only draft edits versions
-                    // as we don't want to delete publish versions because these drive isPublishedInLocale()
-                    $baseTable . '."WasPublished"' => 0,
+                    // Include published records if delete_published_records is set to true
+                    $baseTable . '."WasPublished"' => $deletePublishedRecords,
                     // Skip records without mandatory data
                     $baseTable . '."ClassName" IS NOT NULL',
                     $baseTable . '."ClassName" != ?' => '',
