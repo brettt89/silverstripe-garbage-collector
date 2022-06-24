@@ -41,6 +41,20 @@ class VersionedCollector extends AbstractCollector
     private static $keep_unpublished_drafts = false;
 
     /**
+     * Determine whether to delete published records
+     *
+     * @var bool
+     */
+    private static $delete_published_records = false;
+
+    /**
+     * Determine whether to delete published versions
+     *
+     * @var bool
+     */
+    private static $delete_published_versions = false;
+
+    /**
      * Number of records processed in one deletion run per base class
      *
      * @var int
@@ -162,11 +176,12 @@ class VersionedCollector extends AbstractCollector
         $keepLimit = (int) $this->config()->get('keep_limit');
         $recordLimit = (int) $this->config()->get('deletion_record_limit');
         $keepUnpublishedDrafts = (bool) $this->config()->get('keep_unpublished_drafts');
+        $deletePublishedRecords = (bool) $this->config()->get('delete_published_records');
         $deletionDate = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822());
         $deletionDate = $deletionDate->setValue(strtotime(
-                sprintf('- %d days', $this->config()->get('keep_lifetime')),
-                $deletionDate->getTimestamp()
-            ))->Rfc2822();
+            sprintf('- %d days', $this->config()->get('keep_lifetime')),
+            $deletionDate->getTimestamp()
+        ))->Rfc2822();
         $records = [];
 
         foreach ($classes as $class) {
@@ -182,9 +197,8 @@ class VersionedCollector extends AbstractCollector
                 [
                     // Include only versions older than specified date
                     $baseTable . '."LastEdited" <= ?' => $deletionDate,
-                    // Include only draft edits versions
-                    // as we don't want to delete publish versions because these drive isPublishedInLocale()
-                    $baseTable . '."WasPublished"' => 0,
+                    // Include published records if delete_published_records is set to true
+                    $baseTable . '."WasPublished"' => $deletePublishedRecords,
                     // Skip records without mandatory data
                     $baseTable . '."ClassName" IS NOT NULL',
                     $baseTable . '."ClassName" != ?' => '',
@@ -257,11 +271,12 @@ class VersionedCollector extends AbstractCollector
         $keepLimit = (int) $this->config()->get('keep_limit');
         $versionLimit = (int) $this->config()->get('deletion_version_limit') * $this->config()->get('query_limit');
         $keepUnpublishedDrafts = (bool) $this->config()->get('keep_unpublished_drafts');
+        $deletePublishedVersions = (bool) $this->config()->get('delete_published_versions');
         $deletionDate = DBDatetime::create_field('Datetime', DBDatetime::now()->Rfc2822());
         $deletionDate = $deletionDate->setValue(strtotime(
-                sprintf('- %d days', $this->config()->get('keep_lifetime')),
-                $deletionDate->getTimestamp()
-            ))->Rfc2822();
+            sprintf('- %d days', $this->config()->get('keep_lifetime')),
+            $deletionDate->getTimestamp()
+        ))->Rfc2822();
         $versions = [];
 
         foreach ($records as $baseClass => $items) {
@@ -283,9 +298,8 @@ class VersionedCollector extends AbstractCollector
                         $baseTable . '."RecordID"' => $recordId,
                         // Include only versions older than specified date
                         $baseTable . '."LastEdited" <= ?' => $deletionDate,
-                        // Include only draft edits versions
-                        // as we don't want to delete publish versions because these drive isPublishedInLocale()
-                        $baseTable . '."WasPublished"' => 0,
+                        // Include published versions if delete_published is set to true
+                        $baseTable . '."WasPublished"' => $deletePublishedVersions,
                         // Skip records without mandatory data
                         $baseTable . '."ClassName" IS NOT NULL',
                         $baseTable . '."ClassName" != ?' => '',
