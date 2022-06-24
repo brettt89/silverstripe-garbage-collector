@@ -40,6 +40,7 @@ class GarbageCollectorService
     public function setLogger($logger)
     {
         $this->logger = $logger;
+        return $this;
     }
 
     /**
