@@ -5,8 +5,8 @@ namespace SilverStripe\GarbageCollector\Tests\Processors;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\GarbageCollector\Tests\CargoShip;
 use SilverStripe\GarbageCollector\Tests\Ship;
+use SilverStripe\ORM\Queries\SQLConditionalExpression;
 use SilverStripe\ORM\Queries\SQLSelect;
-use SilverStripe\ORM\Queries\SQLExpression;
 use SilverStripe\ORM\DB;
 use SilverStripe\GarbageCollector\Processors\SQLExpressionProcessor;
 
@@ -62,7 +62,7 @@ class SQLExpressionProcessorTest extends SapphireTest
         // Ensure base table is used for name
         $name = $processor->getName();
         $this->assertEquals('GarbageCollector_Ship', $name);
-        $this->assertEquals(SQLExpression::class, $processor->getImplementorClass());
+        $this->assertEquals(SQLConditionalExpression::class, $processor->getImplementorClass());
 
         // Test overloading naming through constructor
         $processor = new SQLExpressionProcessor($expression, 'TestName');
