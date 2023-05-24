@@ -3,7 +3,7 @@
 namespace SilverStripe\GarbageCollector\Extensions;
 
 use SilverStripe\Core\Extension;
-use SilverStripe\GarbageCollector\Jobs\AllGarbageCollectorJob;
+use SilverStripe\GarbageCollector\Jobs\RecurringAllGarbageCollectorJob;
 
 class QueuedJobDescriptorExtension extends Extension
 {
@@ -12,6 +12,6 @@ class QueuedJobDescriptorExtension extends Extension
      */
     public function onAfterBuild(): void
     {
-        AllGarbageCollectorJob::singleton()->requireDefaultJob();
+        RecurringAllGarbageCollectorJob::singleton()->requireDefaultJob();
     }
 }

@@ -21,7 +21,7 @@ use Symbiote\QueuedJobs\Services\QueuedJobService;
  * @property array $versions
  * @property array $remainingVersions
  */
-class AllGarbageCollectorJob extends AbstractQueuedJob
+class RecurringAllGarbageCollectorJob extends AbstractQueuedJob
 {
     use Configurable;
     /**
@@ -84,7 +84,7 @@ class AllGarbageCollectorJob extends AbstractQueuedJob
     public function requireDefaultJob(): void
     {
         $filter = [
-            'Implementation' => AllGarbageCollectorJob::class,
+            'Implementation' => RecurringAllGarbageCollectorJob::class,
             'JobStatus' => [
                 QueuedJob::STATUS_NEW,
                 QueuedJob::STATUS_INIT,
