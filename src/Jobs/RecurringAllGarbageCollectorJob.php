@@ -52,6 +52,7 @@ class RecurringAllGarbageCollectorJob extends AbstractQueuedJob
 
     public function setup(): void
     {
+        $service = GarbageCollectorService::inst();
         $this->totalSteps = count($service ->getCollectors());
     }
 
