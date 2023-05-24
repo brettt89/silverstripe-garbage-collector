@@ -4,6 +4,7 @@ namespace SilverStripe\GarbageCollector\Jobs;
 
 use Exception;
 use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\GarbageCollector\CollectorInterface;
@@ -24,6 +25,7 @@ use Symbiote\QueuedJobs\Services\QueuedJobService;
 class RecurringAllGarbageCollectorJob extends AbstractQueuedJob
 {
     use Configurable;
+    use Injectable;
     /**
      * Constructor
      *
