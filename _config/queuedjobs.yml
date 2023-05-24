@@ -1,0 +1,8 @@
+---
+Name: session-manager-queuedjobs
+Only:
+  moduleexists: 'symbiote/silverstripe-queuedjobs'
+---
+Symbiote\QueuedJobs\DataObjects\QueuedJobDescriptor:
+  extensions:
+    - 'SilverStripe\GarbageCollector\Extensions\QueuedJobDescriptorExtension'
