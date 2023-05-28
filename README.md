@@ -37,14 +37,10 @@ SilverStripe\GarbageCollector\GarbageCollectorService:
     - 'SilverStripe\GarbageCollector\Collectors\VersionedCollector'
     - 'SilverStripe\GarbageCollector\Collectors\ChangeSetCollector'
 
-#Queue a RecurringAllGarbageCollectorJob if there isn't one already
+#Queue a RecurringAllGarbageCollectorJob if there isn't one already. It will then re-queue itself to run once a day.
 Symbiote\QueuedJobs\DataObjects\QueuedJobDescriptor:
   extensions:
     - 'SilverStripe\GarbageCollector\Extensions\QueuedJobDescriptorExtension'
-
-#Automatically run all garbadge collectors every day
-SilverStripe\GarbageCollector\Jobs\RecurringAllGarbageCollectorJob:
-  seconds_between_jobs: 86400
 ```
 
 The example setup will create a job that run all garbadge collectors every day after running dev build. It does this by calling `GarbageCollectorService::inst()->process();`. 

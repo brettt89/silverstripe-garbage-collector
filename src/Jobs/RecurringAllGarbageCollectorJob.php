@@ -26,6 +26,9 @@ class RecurringAllGarbageCollectorJob extends AbstractQueuedJob
 {
     use Configurable;
     use Injectable;
+
+    private static $seconds_between_jobs = 86400; //default to run once a day
+
     /**
      * Constructor
      *
@@ -61,12 +64,7 @@ class RecurringAllGarbageCollectorJob extends AbstractQueuedJob
      */
     public function process(): void
     {
-        $logger = new \Monolog\Handler\TestHandler();
-
         $service = GarbageCollectorService::inst();
-        $service->setLogger(new \Monolog\Logger('TestLogger', [
-            $logger
-        ]));
 
         foreach ($service ->getCollectors() as $collector) {
             QueuedJobService::singleton()->queueJob(
@@ -76,7 +74,7 @@ class RecurringAllGarbageCollectorJob extends AbstractQueuedJob
             $this->currentStep += 1;
         }
 
-        $this->queueNextJob();
+        self::queueNextJob();
         $this->isComplete = true;
     }
 
@@ -92,20 +90,21 @@ class RecurringAllGarbageCollectorJob extends AbstractQueuedJob
                 QueuedJob::STATUS_NEW,
                 QueuedJob::STATUS_INIT,
                 QueuedJob::STATUS_RUN,
+                QueuedJob::STATUS_PAUSED,
             ]
         ];
         if (QueuedJobDescriptor::get()->filter($filter)->count() > 0) {
             return;
         }
-        $this->queueNextJob();
+        self::queueNextJob();
     }
 
     /**
      * Queue the next check for garbage collection. The default time frame is after 1 day.
      */
-    private function queueNextJob(): void
+    public static function queueNextJob(): void
     {
-        $timestamp = time() + (self::config()->get('seconds_between_jobs') ?? 86400);
+        $timestamp = time() + (self::config()->get('seconds_between_jobs'));
         QueuedJobService::singleton()->queueJob(
             Injector::inst()->create(self::class),
             DBDatetime::create()->setValue($timestamp)->Rfc2822()
