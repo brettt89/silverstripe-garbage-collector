@@ -6,6 +6,7 @@ use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\GarbageCollector\Processors\DataListProcessor;
 use SilverStripe\ORM\DataObject;
 
 class GarbageCollectorService
@@ -40,7 +41,6 @@ class GarbageCollectorService
     public function setLogger($logger)
     {
         $this->logger = $logger;
-        return $this;
     }
 
     /**
@@ -127,9 +127,12 @@ class GarbageCollectorService
             $this->logger->notice('No Processors provided for Collection');
             return;
         }
+        $dataList = Injector::inst()->get(DataListProcessor::class)->getImplementorClass();
 
-        if (is_array($collection) || $collection instanceof \Traversable && !$collection instanceof DataObject) {
-            // If traversable object is provided, loop through its items to process;
+        if (is_array($collection) || $collection instanceof \Traversable 
+            && !$collection instanceof DataObject
+            && !isset($processors[$dataList])) {
+            // If traversable object is provided, loop through its items to process, except for things that need to be processed by DataListProcessor
             foreach ($collection as $item) {
                 $this->processCollection($item, $processors);
             }

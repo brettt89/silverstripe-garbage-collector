@@ -12,7 +12,6 @@ if (!class_exists(AbstractQueuedJob::class)) {
     return;
 }
 
-
 /**
  * @property CollectorInterface|null $collector
  * @property int|null $batchSize
@@ -120,7 +119,7 @@ class GarbageCollectorJob extends AbstractQueuedJob
         if (count($remaining) > 0) {
             return;
         }
-
+        
         $this->isComplete = true;
     }
 }

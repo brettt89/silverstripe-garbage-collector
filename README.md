@@ -36,9 +36,16 @@ SilverStripe\GarbageCollector\GarbageCollectorService:
   collectors:
     - 'SilverStripe\GarbageCollector\Collectors\VersionedCollector'
     - 'SilverStripe\GarbageCollector\Collectors\ChangeSetCollector'
+
+#Queue a RecurringAllGarbageCollectorJob if there isn't one already. It will then re-queue itself to run once a day.
+Symbiote\QueuedJobs\DataObjects\QueuedJobDescriptor:
+  extensions:
+    - 'SilverStripe\GarbageCollector\Extensions\QueuedJobDescriptorExtension'
 ```
 
-Now we just need to define an execution for the GarbageCollectorService by calling `GarbageCollectorService::inst()->process();`. You may decide to do this in a BuildTask or Job depending on how you want to execute Garbage Collection (e.g. Crontab).
+The example setup will create a job that run all garbadge collectors every day after running dev build. It does this by calling `GarbageCollectorService::inst()->process();`. 
+
+You also may decide to do this with some other process (BuildTask with Crontab that calls `GarbageCollectorService::inst()->process();`)
 
 ## Documentation
 
