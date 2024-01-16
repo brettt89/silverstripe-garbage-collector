@@ -1,7 +1,7 @@
 {
     "name": "brettt89/silverstripe-garbage-collector",
     "description": "SilverStripe Garbage Collector module",
-    "keywords": ["silverstripe", "garbage", "collector"],
+    "keywords": ["silverstripe", "garbage", "collector", "versions", "versioning", "pruning", "pruner", "obsolete", "database", "stale"],
     "license": "MIT",
     "autoload": {
         "psr-4": {
