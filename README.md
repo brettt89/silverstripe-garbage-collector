@@ -80,4 +80,4 @@ This project is made possible by the community surrounding it and especially the
 
 ### Libraries
 
-#### [silverstripe/framework] (https://github.com/silverstripe/silverstripe-framework)
+- [silverstripe/framework](https://github.com/silverstripe/silverstripe-framework)
