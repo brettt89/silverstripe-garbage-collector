@@ -29,7 +29,7 @@ class GarbageCollectorServiceTest extends SapphireTest
     private $mockCollector1;
     private $mockCollector2;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->logger = new \Monolog\Handler\TestHandler();
 

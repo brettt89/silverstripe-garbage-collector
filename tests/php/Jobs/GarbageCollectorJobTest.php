@@ -2,12 +2,13 @@
 
 namespace SilverStripe\GarbageCollector\Tests\Jobs;
 
+use Exception;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\GarbageCollector\CollectorInterface;
 use SilverStripe\GarbageCollector\Jobs\GarbageCollectorJob;
 use SilverStripe\GarbageCollector\Tests\CargoShip;
-use SilverStripe\GarbageCollector\Tests\Ship;
 use SilverStripe\GarbageCollector\Tests\MockProcessor;
+use SilverStripe\GarbageCollector\Tests\Ship;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJob;
 
@@ -26,7 +27,7 @@ class GarbageCollectorJobTest extends SapphireTest
         CargoShip::class,
     ];
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -107,7 +108,7 @@ class GarbageCollectorJobTest extends SapphireTest
 
         $data = $job->getJobData();
         # Expected 3 times, once for each ship
-        $this->assertContains('[NOTICE] Unable to find processor for stdClass', array_shift($data->messages));
+        $this->assertStringContainsString('[NOTICE] Unable to find processor for stdClass', array_shift($data->messages));
         $this->assertEmpty($data->messages);
 
         $this->assertTrue($job->jobFinished());
@@ -120,6 +121,9 @@ class GarbageCollectorJobTest extends SapphireTest
      */
     public function testEmptyProcesses()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('No Processors found for collector');
+
         $mockCollector = $this->createMock(CollectorInterface::class);
         $mockCollector->expects($this->once())
                       ->method('getCollections')
@@ -163,9 +167,9 @@ class GarbageCollectorJobTest extends SapphireTest
 
         $data = $job->getJobData();
         # Expected 3 times, once for each ship
-        $this->assertContains('[INFO] Processed 1 records for ' . Ship::class . ' using MockProcessor', array_shift($data->messages));
-        $this->assertContains('[INFO] Processed 1 records for ' . Ship::class . ' using MockProcessor', array_shift($data->messages));
-        $this->assertContains('[INFO] Processed 1 records for ' . Ship::class . ' using MockProcessor', array_shift($data->messages));
+        $this->assertStringContainsString('[INFO] Processed 1 records for ' . Ship::class . ' using MockProcessor', array_shift($data->messages));
+        $this->assertStringContainsString('[INFO] Processed 1 records for ' . Ship::class . ' using MockProcessor', array_shift($data->messages));
+        $this->assertStringContainsString('[INFO] Processed 1 records for ' . Ship::class . ' using MockProcessor', array_shift($data->messages));
 
         # No further messages should exist and job should be completed.
         $this->assertEmpty($data->messages);
