@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-		"php": "~8.0",
+        "php": "~8.0",
         "silverstripe/framework": "^4.13 | ^5"
     },
     "require-dev": {
