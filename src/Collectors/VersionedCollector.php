@@ -2,15 +2,17 @@
 
 namespace SilverStripe\GarbageCollector\Collectors;
 
-use SilverStripe\GarbageCollector\Processors\SQLExpressionProcessor;
+use Exception;
 use SilverStripe\Core\ClassInfo;
-use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Core\Extensible;
+use SilverStripe\GarbageCollector\Processors\SQLExpressionProcessor;
+use SilverStripe\ORM\Connect\Query;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\FieldType\DBDatetime;
-use SilverStripe\ORM\Queries\SQLExpression;
 use SilverStripe\ORM\Queries\SQLDelete;
+use SilverStripe\ORM\Queries\SQLExpression;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\Versioned\Versioned;
 
@@ -238,17 +240,8 @@ class VersionedCollector extends AbstractCollector
                 continue;
             }
 
-            $data = [];
-
-            while ($result = $results->next()) {
-                $item = [
-                    'id' => (int) $result['RecordID'],
-                ];
-
-                $this->extend('updateRecordsData', $class, $item, $result);
-
-                $data[] = $item;
-            }
+            // Process results
+            $data = $this->processResults($class, $results);
 
             if (count($data) === 0) {
                 continue;
@@ -340,20 +333,8 @@ class VersionedCollector extends AbstractCollector
                     continue;
                 }
 
-                $data = [];
-
                 // Group versions by class so it's easier to process them later
-                while ($result = $results->next()) {
-                    $version = (int) $result['Version'];
-                    $class = $result['ClassName'];
-
-                    if (!array_key_exists($class, $data)) {
-                        $data[$class] = [];
-                    }
-
-                    $data[$class][] = $version;
-                }
-                $data[$class] = array_reverse($data[$class]);
+                $data = $this->groupVersions($results);
 
                 if (count($data) === 0) {
                     continue;
@@ -477,5 +458,87 @@ class VersionedCollector extends AbstractCollector
     public function getVersionTableName(string $table): string
     {
         return $table . '_Versions';
+    }
+
+    /**
+     * Process a list of results
+     *
+     * @param string $class
+     * @param Query $results
+     * @return array
+     */
+    private function processResults(string $class, Query $results): array
+    {
+        $data = [];
+
+        if (method_exists($results, 'next')) {
+            // Process for CMS 4.13
+            while ($result = $results->next()) {
+                $item = $this->processResult($class, $result);
+                $data[] = $item;
+            }
+        } elseif (method_exists($results, 'getIterator')) {
+            // Process for CMS 5+
+            foreach ($results as $result) {
+                $item = $this->processResult($class, $result);
+                $data[] = $item;
+            }
+        } else {
+            // Handle unsupported results object, just in case
+            throw new Exception('The results object does not support next method or Traversable interface.');
+        }
+
+        return $data;
+    }
+
+    /**
+     * Process a single result item.
+     *
+     * @param string $class
+     * @param array $result
+     * @return array
+     */
+    private function processResult(string $class, array $result): array
+    {
+        $item = [
+            'id' => (int) $result['RecordID'],
+        ];
+
+        $this->extend('updateRecordsData', $class, $item, $result);
+
+        return $item;
+    }
+
+    /**
+     * Group versions by class so it's easier to process them later
+     *
+     * @param Query $results
+     * @return array
+     */
+    private function groupVersions(Query $results): array
+    {
+        $data = [];
+
+        if (method_exists($results, 'next')) {
+            // Process for CMS 4.13
+            while ($result = $results->next()) {
+                $class = $result['ClassName'];
+                $version = (int) $result['Version'];
+                $data[$class][] = $version;
+            }
+        } elseif (method_exists($results, 'getIterator')) {
+            // Process for CMS 5+
+            foreach ($results as $result) {
+                $class = $result['ClassName'];
+                $version = (int) $result['Version'];
+                $data[$class][] = $version;
+            }
+        } else {
+            // Handle unsupported results object, just in case
+            throw new Exception('The results object does not support next method or Traversable interface.');
+        }
+
+        // reverse the order of versions so we delete the oldest first
+        return array_map('array_reverse', $data);
     }
 }

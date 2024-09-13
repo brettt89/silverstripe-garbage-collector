@@ -3,4 +3,7 @@
 .phpunit.result.cache
 /vendor/
 /assets/
+/_resources/
+/resources/
+/public/
 composer.lock
