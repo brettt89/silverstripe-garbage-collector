@@ -7,7 +7,7 @@ use SilverStripe\GarbageCollector\Tests\CargoShip;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\GarbageCollector\Collectors\VersionedCollector;
-use SilverStripe\ORM\ValidationException;
+use SilverStripe\Core\Validation\ValidationException;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\GarbageCollector\Tests\Ship;
 use SilverStripe\Core\Config\Config;
@@ -48,7 +48,7 @@ class VersionedCollectorTest extends SapphireTest
      * @param ?int $keep_limit
      * @param bool $keep_unpublished_drafts
      * @param string $model_class
-     * @throws ValidationException
+     * @throws \SilverStripe\Core\Validation\ValidationException
      * @dataProvider collectionsProvider
      */
     public function testGetCollections(
@@ -218,7 +218,7 @@ class VersionedCollectorTest extends SapphireTest
 
     /**
      * @param DataObject|Versioned $model
-     * @throws ValidationException
+     * @throws \SilverStripe\Core\Validation\ValidationException
      * @throws \Exception
      */
     private function createTestVersions(DataObject $model): void

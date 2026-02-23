@@ -5,7 +5,7 @@ namespace SilverStripe\GarbageCollector\Tests\Extensions;
 use SilverStripe\GarbageCollector\Collectors\VersionedCollector;
 use SilverStripe\GarbageCollector\Extensions\FluentVersionedCollectorExtension;
 use SilverStripe\GarbageCollector\Tests\CargoShip;
-use SilverStripe\ORM\ValidationException;
+use SilverStripe\Core\Validation\ValidationException;
 use SilverStripe\Versioned\Versioned;
 use TractorCow\Fluent\Extension\FluentVersionedExtension;
 use TractorCow\Fluent\State\FluentState;
@@ -61,7 +61,7 @@ class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
      * @param ?int $keep_limit
      * @param bool $keep_unpublished_drafts
      * @param string $model_class
-     * @throws ValidationException
+     * @throws \SilverStripe\Core\Validation\ValidationException
      * @dataProvider collectionsProvider
      */
     public function testGetCollections(
