@@ -61,7 +61,7 @@ class GarbageCollectorJob extends AbstractQueuedJob
         return sprintf("Garbage Collection processing for %s collector", $this->collector->getName());
     }
 
-    public function getJobType(): int
+    public function getJobType(): string
     {
         return QueuedJob::QUEUED;
     }
