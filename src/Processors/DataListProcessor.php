@@ -6,7 +6,6 @@ use SilverStripe\ORM\DataList;
 
 class DataListProcessor extends AbstractProcessor
 {
-
     /**
      * DataObject to delete
      *

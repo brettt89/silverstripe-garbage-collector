@@ -129,9 +129,11 @@ class GarbageCollectorService
         }
         $dataList = Injector::inst()->get(DataListProcessor::class)->getImplementorClass();
 
-        if (is_array($collection) || $collection instanceof \Traversable 
+        if (
+            is_array($collection) || $collection instanceof \Traversable
             && !$collection instanceof DataObject
-            && !isset($processors[$dataList])) {
+            && !isset($processors[$dataList])
+        ) {
             // If traversable object is provided, loop through its items to process, except for things that need to be processed by DataListProcessor
             foreach ($collection as $item) {
                 $this->processCollection($item, $processors);

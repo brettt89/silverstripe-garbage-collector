@@ -7,7 +7,6 @@ use SilverStripe\ORM\Queries\SQLConditionalExpression;
 
 class SQLExpressionProcessor extends AbstractProcessor
 {
-
     /**
      * Expression to delete
      *

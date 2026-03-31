@@ -9,10 +9,8 @@ use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
 use TractorCow\Fluent\Extension\FluentVersionedExtension;
 use TractorCow\Fluent\State\FluentState;
-
 use SilverStripe\GarbageCollector\Tests\Ship;
 use SilverStripe\GarbageCollector\Tests\Collectors\VersionedCollectorTest;
-
 
 class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
 {
@@ -72,8 +70,7 @@ class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
         int $keep_limit = null,
         bool $keep_unpublished_drafts = false,
         string $model_class = Ship::class
-    ): void
-    {
+    ): void {
         FluentState::singleton()->withState(function (FluentState $state) use ($id, $modifyDate, $expected, $deletion_limit): void {
             $state->setLocale('en_GB');
             parent::testGetCollections($id, $modifyDate, $expected, $deletion_limit);

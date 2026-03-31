@@ -68,7 +68,7 @@ class RecurringAllGarbageCollectorJob extends AbstractQueuedJob
 
         foreach ($service ->getCollectors() as $collector) {
             QueuedJobService::singleton()->queueJob(
-                Injector::inst()->create(GarbageCollectorJob::class,$collector),
+                Injector::inst()->create(GarbageCollectorJob::class, $collector),
                 DBDatetime::create()->setValue(time())->Rfc2822()
             );
             $this->currentStep += 1;

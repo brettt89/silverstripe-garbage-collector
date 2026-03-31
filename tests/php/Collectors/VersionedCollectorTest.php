@@ -59,8 +59,7 @@ class VersionedCollectorTest extends SapphireTest
         int $keep_limit = null,
         bool $keep_unpublished_drafts = false,
         string $model_class = Ship::class
-    ): void
-    {
+    ): void {
         $model = $this->objFromFixture($model_class, $id);
         $this->createTestVersions($model);
 

@@ -103,7 +103,6 @@ class FluentVersionedCollectorExtension extends Extension
                     $localisedTable . '."Locale"' => $locale,
                 ]);
         }
-
     }
 
     /**
