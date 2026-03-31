@@ -41,7 +41,7 @@ class ChangeSetCollectorTest extends SapphireTest
      * @param string $class
      * @param string $now
      * @param array $expected
-     * @throws \SilverStripe\Core\Validation\ValidationException
+     * @throws ValidationException
      * @dataProvider collectionsProvider
      */
     public function testGetCollections(string $id, ?string $modifyDate = null, array $expected = [], ?int $deletion_limit = null): void
@@ -103,7 +103,7 @@ class ChangeSetCollectorTest extends SapphireTest
 
     /**
      * @param DataObject|Versioned $model
-     * @throws \SilverStripe\Core\Validation\ValidationException
+     * @throws ValidationException
      * @throws \Exception
      */
     private function createTestVersions(DataObject $model): void

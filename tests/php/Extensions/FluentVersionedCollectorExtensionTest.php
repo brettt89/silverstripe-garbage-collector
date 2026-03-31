@@ -61,7 +61,7 @@ class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
      * @param ?int $keep_limit
      * @param bool $keep_unpublished_drafts
      * @param string $model_class
-     * @throws \SilverStripe\Core\Validation\ValidationException
+     * @throws ValidationException
      * @dataProvider collectionsProvider
      */
     public function testGetCollections(

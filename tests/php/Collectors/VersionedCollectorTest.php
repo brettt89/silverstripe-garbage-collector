@@ -48,7 +48,7 @@ class VersionedCollectorTest extends SapphireTest
      * @param ?int $keep_limit
      * @param bool $keep_unpublished_drafts
      * @param string $model_class
-     * @throws \SilverStripe\Core\Validation\ValidationException
+     * @throws ValidationException
      * @dataProvider collectionsProvider
      */
     public function testGetCollections(
@@ -218,7 +218,7 @@ class VersionedCollectorTest extends SapphireTest
 
     /**
      * @param DataObject|Versioned $model
-     * @throws \SilverStripe\Core\Validation\ValidationException
+     * @throws ValidationException
      * @throws \Exception
      */
     private function createTestVersions(DataObject $model): void
