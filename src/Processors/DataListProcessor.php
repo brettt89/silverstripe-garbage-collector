@@ -14,7 +14,7 @@ class DataListProcessor extends AbstractProcessor
      */
     private $list;
 
-    public function __construct(DataList $list = null, string $name = '')
+    public function __construct(?DataList $list = null, string $name = '')
     {
         $this->list = $list;
         parent::__construct($name);

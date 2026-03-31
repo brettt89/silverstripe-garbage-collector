@@ -5,7 +5,7 @@ namespace SilverStripe\GarbageCollector\Tests\Extensions;
 use SilverStripe\GarbageCollector\Collectors\VersionedCollector;
 use SilverStripe\GarbageCollector\Extensions\FluentVersionedCollectorExtension;
 use SilverStripe\GarbageCollector\Tests\CargoShip;
-use SilverStripe\ORM\ValidationException;
+use SilverStripe\Core\Validation\ValidationException;
 use SilverStripe\Versioned\Versioned;
 use TractorCow\Fluent\Extension\FluentVersionedExtension;
 use TractorCow\Fluent\State\FluentState;
@@ -66,21 +66,21 @@ class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
      */
     public function testGetCollections(
         string $id,
-        string $modifyDate = null,
+        ?string $modifyDate = null,
         array $expected = [],
-        int $deletion_limit = null,
-        int $keep_limit = null,
+        ?int $deletion_limit = null,
+        ?int $keep_limit = null,
         bool $keep_unpublished_drafts = false,
         string $model_class = Ship::class
     ): void
     {
-        FluentState::singleton()->withState(function (FluentState $state) use ($id, $modifyDate, $expected, $deletion_limit): void {
+        FluentState::singleton()->withState(function (FluentState $state) use ($id, $modifyDate, $expected, $deletion_limit, $keep_limit, $keep_unpublished_drafts, $model_class): void {
             $state->setLocale('en_GB');
-            parent::testGetCollections($id, $modifyDate, $expected, $deletion_limit);
+            parent::testGetCollections($id, $modifyDate, $expected, $deletion_limit, $keep_limit, $keep_unpublished_drafts, $model_class);
         });
     }
 
-    public function collectionsProvider(): array
+    public static function collectionsProvider(): array
     {
         return [
             'Localised / No versions passed lifetime' => [

@@ -7,7 +7,7 @@ use SilverStripe\GarbageCollector\Tests\CargoShip;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\GarbageCollector\Collectors\VersionedCollector;
-use SilverStripe\ORM\ValidationException;
+use SilverStripe\Core\Validation\ValidationException;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\GarbageCollector\Tests\Ship;
 use SilverStripe\Core\Config\Config;
@@ -53,10 +53,10 @@ class VersionedCollectorTest extends SapphireTest
      */
     public function testGetCollections(
         string $id,
-        string $modifyDate = null,
+        ?string $modifyDate = null,
         array $expected = [],
-        int $deletion_limit = null,
-        int $keep_limit = null,
+        ?int $deletion_limit = null,
+        ?int $keep_limit = null,
         bool $keep_unpublished_drafts = false,
         string $model_class = Ship::class
     ): void
@@ -114,7 +114,7 @@ class VersionedCollectorTest extends SapphireTest
         }
     }
 
-    public function collectionsProvider(): array
+    public static function collectionsProvider(): array
     {
         return [
             'No versions passed lifetime' => [

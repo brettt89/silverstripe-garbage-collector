@@ -15,7 +15,7 @@ class RawSQLProcessor extends AbstractProcessor
      */
     private $query;
 
-    public function __construct(RawSQL $query = null, string $name = '')
+    public function __construct(?RawSQL $query = null, string $name = '')
     {
         $this->query = $query;
         parent::__construct($name);
