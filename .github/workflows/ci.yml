@@ -14,25 +14,6 @@ jobs:
       actions: write
     uses: silverstripe/gha-ci/.github/workflows/ci.yml@v2
     with:
-      dynamic_matrix: false
       endtoend: false
       phpcoverage_force_off: true
       js: false
-      extra_jobs: |
-        - php: 8.2
-          db: mysql80
-          phpunit: true
-          phpunit_suite: all
-          needs_full_setup: true
-          composer_install: false
-        - php: 8.3
-          db: mysql84
-          phpunit: true
-          phpunit_suite: all
-          needs_full_setup: true
-          composer_install: false
-        - php: 8.1
-          db: mysql80
-          phplinting: true
-          needs_full_setup: false
-          composer_install: false
