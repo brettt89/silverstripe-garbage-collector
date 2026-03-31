@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 Standard module phpunit configuration.
-Requires PHPUnit ^5.7
+Requires PHPUnit ^11
 -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="vendor/silverstripe/framework/tests/bootstrap.php" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11/phpunit.xsd">
   <source>

@@ -74,9 +74,9 @@ class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
         string $model_class = Ship::class
     ): void
     {
-        FluentState::singleton()->withState(function (FluentState $state) use ($id, $modifyDate, $expected, $deletion_limit): void {
+        FluentState::singleton()->withState(function (FluentState $state) use ($id, $modifyDate, $expected, $deletion_limit, $keep_limit, $keep_unpublished_drafts, $model_class): void {
             $state->setLocale('en_GB');
-            parent::testGetCollections($id, $modifyDate, $expected, $deletion_limit);
+            parent::testGetCollections($id, $modifyDate, $expected, $deletion_limit, $keep_limit, $keep_unpublished_drafts, $model_class);
         });
     }
 
