@@ -43,7 +43,7 @@ class RecurringAllGarbageCollectorJob extends AbstractQueuedJob
      * Defines the title of the job
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return sprintf("Garbage Collection processing for all collectors");
     }
