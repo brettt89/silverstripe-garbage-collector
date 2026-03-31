@@ -129,8 +129,7 @@ class GarbageCollectorService
         }
         $dataList = Injector::inst()->get(DataListProcessor::class)->getImplementorClass();
 
-        if (
-            is_array($collection) || $collection instanceof \Traversable
+        if (is_array($collection) || $collection instanceof \Traversable
             && !$collection instanceof DataObject
             && !isset($processors[$dataList])
         ) {
