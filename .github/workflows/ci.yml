@@ -17,4 +17,3 @@ jobs:
       endtoend: false
       phpcoverage_force_off: true
       js: false
-      composer_require_extra: silverstripe/cms:^5
