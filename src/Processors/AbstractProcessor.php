@@ -6,7 +6,6 @@ use SilverStripe\GarbageCollector\ProcessorInterface;
 
 abstract class AbstractProcessor implements ProcessorInterface
 {
-
     /**
      * Identifier for expression (e.g. Base table name)
      *

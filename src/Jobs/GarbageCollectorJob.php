@@ -119,7 +119,7 @@ class GarbageCollectorJob extends AbstractQueuedJob
         if (count($remaining) > 0) {
             return;
         }
-        
+
         $this->isComplete = true;
     }
 }

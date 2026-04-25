@@ -7,7 +7,6 @@ use SilverStripe\ORM\DB;
 
 class RawSQLProcessor extends AbstractProcessor
 {
-
     /**
      * Query to process
      *
