@@ -14,7 +14,7 @@ class SQLExpressionProcessor extends AbstractProcessor
      */
     private $expression;
 
-    public function __construct(SQLConditionalExpression $expression = null, string $name = '')
+    public function __construct(?SQLConditionalExpression $expression = null, string $name = '')
     {
         $this->expression = $expression;
         parent::__construct($name);

@@ -37,7 +37,7 @@ class GarbageCollectorJob extends AbstractQueuedJob
      *
      * @var string
      */
-    public function __construct(?CollectorInterface $collector = null, $batchSize = 10)
+    public function __construct(?CollectorInterface $collector = null, int $batchSize = 10)
     {
         parent::__construct();
 
@@ -56,12 +56,12 @@ class GarbageCollectorJob extends AbstractQueuedJob
      * Defines the title of the job
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return sprintf("Garbage Collection processing for %s collector", $this->collector->getName());
     }
 
-    public function getJobType(): int
+    public function getJobType(): string
     {
         return QueuedJob::QUEUED;
     }
@@ -74,7 +74,7 @@ class GarbageCollectorJob extends AbstractQueuedJob
 
         // Batch processing based on batchSize
         // ceil is used here to ensure an integer
-        $this->totalSteps = ceil(count($collections) / $this->batchSize);
+        $this->totalSteps = (int) ceil(count($collections) / $this->batchSize);
     }
 
     /**
